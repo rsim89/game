@@ -87,7 +87,7 @@ class Box {
 let score = 0;
 let scoreInterval;
 
-const scoreBonus = 10; // Bonus points for correct answer
+const scoreBonus = 15; // Bonus points for correct answer
 
 // Integrate learning mode in the score update function
 function updateScore() {
@@ -232,7 +232,7 @@ const wordPairs = [
 
 let learningMode = false;
 let currentWordPair = null;
-let hintCounter = 0;
+let hintCounter = -1;
 
 // Create HTML elements for learning mode
 const wordDisplay = document.createElement("div");
@@ -266,6 +266,7 @@ submitButton.innerText = "Submit";
 submitButton.className = "submit-button";
 inputContainer.appendChild(submitButton);
 
+// Update learningKoreanWord to manage event listeners
 function learningKoreanWord() {
   // Choose a random word pair
   currentWordPair = wordPairs[Math.floor(Math.random() * wordPairs.length)];
@@ -286,22 +287,27 @@ function learningKoreanWord() {
   cancelAnimationFrame(animation);
   clearInterval(scoreInterval);
 
-  // Check answer on submit
-  submitButton.addEventListener("click", checkAnswer);
+  // Remove existing event listener to prevent stacking
+  submitButton.removeEventListener("click", checkAnswer);
+  submitButton.addEventListener("click", checkAnswer); // Add fresh event listener
 }
 
 function displayHint() {
-  // Reveal characters based on the hint counter
+  // Reveal characters based on the hint counter but stop at length - 1
   const hint = currentWordPair.english
     .split("")
     .map((char, index) => (index <= hintCounter ? char : "*"))
     .join("");
 
-  // Update only the hint display element
+  // Update the hint display element
   hintDisplay.innerHTML = `Hint: ${hint}`;
 }
 
+
+// Update checkAnswer to handle null cases
 function checkAnswer() {
+  if (!currentWordPair) return; // Ensure currentWordPair is valid
+
   const userAnswer = inputField.value.trim().toLowerCase();
 
   if (userAnswer === currentWordPair.english.toLowerCase()) {
@@ -315,7 +321,7 @@ function checkAnswer() {
 
     inputField.value = "";
     currentWordPair = null;
-    hintCounter = 0;
+    hintCounter = -1;
     learningMode = false;
 
     // Resume game
@@ -323,7 +329,7 @@ function checkAnswer() {
     scoreInterval = setInterval(updateScore, 2000);
   } else {
     // Incorrect answer: increase hintCounter if it's less than the word length
-    if (hintCounter < currentWordPair.english.length - 1) {
+    if (hintCounter < currentWordPair.english.length - 2) {
       hintCounter++;
     }
     displayHint();
