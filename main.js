@@ -307,10 +307,9 @@ function checkAnswer() {
     if (hintCounter < currentWordPair.english.length - 1) {
       hintCounter++;
     }
-    displayHint(); // Update and show the hint after a wrong answer
+    displayHint();
     alert("Incorrect! Try again.");
   }
 }
-
 
 frameRun();
