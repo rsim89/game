@@ -245,14 +245,14 @@ koreanWordDisplay.className = "korean-word-display";
 wordDisplay.appendChild(koreanWordDisplay);
 
 // Display the hint
-const HintDisplay = document.createElement("div");
-HintDisplay.className = "hint-display";
-HintDisplay.appendChild(HintDisplay);
+const hintDisplay = document.createElement("div"); // Corrected: "HintDisplay" to "hintDisplay"
+hintDisplay.className = "hint-display";
+wordDisplay.appendChild(hintDisplay); // Corrected: append to "wordDisplay" instead of itself
 
 // Container for input field and submit button
 const inputContainer = document.createElement("div");
 inputContainer.className = "input-container";
-inputContainer.appendChild(inputContainer);
+wordDisplay.appendChild(inputContainer); // Corrected: append to "wordDisplay" instead of itself
 
 // Input field
 const inputField = document.createElement("input");
@@ -266,7 +266,6 @@ submitButton.innerText = "Submit";
 submitButton.className = "submit-button";
 inputContainer.appendChild(submitButton);
 
-
 function learningKoreanWord() {
   // Choose a random word pair
   currentWordPair = wordPairs[Math.floor(Math.random() * wordPairs.length)];
@@ -277,13 +276,12 @@ function learningKoreanWord() {
   wordDisplay.style.top = "50%";
   wordDisplay.style.left = "50%";
   wordDisplay.style.transform = "translate(-50%, -50%)";
-  wordDisplay.innerHTML = `<div>Translate: ${currentWordPair.korean}</div>`;
+  koreanWordDisplay.innerHTML = `Translate: ${currentWordPair.korean}`;
 
-  // Append hint, input field and submit button
-  inputContainer.appendChild(HintDisplay);
-  inputContainer.appendChild(inputField);
-  inputContainer.appendChild(submitButton);
-  
+  // Append hint, input field, and submit button
+  wordDisplay.appendChild(hintDisplay); // Corrected: explicitly append hintDisplay to wordDisplay
+  wordDisplay.appendChild(inputContainer);
+
   // Pause the game
   cancelAnimationFrame(animation);
   clearInterval(scoreInterval);
@@ -292,18 +290,16 @@ function learningKoreanWord() {
   submitButton.addEventListener("click", checkAnswer);
 }
 
-
 function displayHint() {
   // Reveal characters based on the hint counter
   const hint = currentWordPair.english
     .split("")
     .map((char, index) => (index <= hintCounter ? char : "*"))
     .join("");
-  
-  // Update only the hint display element
-  HintDisplay.innerHTML = `Hint: ${hint}`;
-}
 
+  // Update only the hint display element
+  hintDisplay.innerHTML = `Hint: ${hint}`;
+}
 
 function checkAnswer() {
   const userAnswer = inputField.value.trim().toLowerCase();
