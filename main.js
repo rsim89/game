@@ -210,4 +210,89 @@ function resetGame() {
   scoreInterval = setInterval(updateScore, 2000);
 }
 
+
+// Word pairs (add more words as needed)
+const wordPairs = [
+  { korean: "사과", english: "apple" },
+  { korean: "바나나", english: "banana" },
+  { korean: "책", english: "book" },
+  { korean: "고양이", english: "cat" },
+  { korean: "개", english: "dog" },
+  { korean: "하늘", english: "sky" },
+];
+
+let learningMode = false;
+let currentWordPair = null;
+
+// Create HTML elements for learning mode
+const wordDisplay = document.createElement("div");
+wordDisplay.className = "word-display";
+document.body.appendChild(wordDisplay);
+
+const inputField = document.createElement("input");
+inputField.type = "text";
+inputField.className = "word-input";
+wordDisplay.appendChild(inputField);
+
+const submitButton = document.createElement("button");
+submitButton.innerText = "Submit";
+submitButton.className = "submit-button";
+wordDisplay.appendChild(submitButton);
+
+function learningKoreanWord() {
+  // Choose a random word pair
+  currentWordPair = wordPairs[Math.floor(Math.random() * wordPairs.length)];
+
+  // Display Korean word in the center
+  wordDisplay.style.display = "flex"; // Make it visible
+  wordDisplay.style.position = "absolute";
+  wordDisplay.style.top = "50%";
+  wordDisplay.style.left = "50%";
+  wordDisplay.style.transform = "translate(-50%, -50%)";
+  wordDisplay.innerHTML = `<div>Translate: ${currentWordPair.korean}</div>`;
+
+  // Append input field and submit button
+  wordDisplay.appendChild(inputField);
+  wordDisplay.appendChild(submitButton);
+  
+  // Pause the game
+  cancelAnimationFrame(animation);
+  clearInterval(scoreInterval);
+
+  // Check answer on submit
+  submitButton.addEventListener("click", checkAnswer);
+}
+
+function checkAnswer() {
+  const userAnswer = inputField.value.trim().toLowerCase();
+  
+  if (userAnswer === currentWordPair.english.toLowerCase()) {
+    // Correct answer: hide word display, reset input, and resume game
+    wordDisplay.style.display = "none";
+    inputField.value = "";
+    currentWordPair = null;
+    learningMode = false;
+
+    // Resume game
+    frameRun();
+    scoreInterval = setInterval(updateScore, 2000);
+  } else {
+    // Incorrect answer: give feedback
+    alert("Incorrect! Try again.");
+  }
+}
+
+// Integrate learning mode in the score update function
+function updateScore() {
+  score += 1;
+  document.querySelector(".score span").textContent = score;
+
+  // Trigger learning mode every 30 points
+  if (score % 30 === 0 && !learningMode) {
+    learningMode = true;
+    learningKoreanWord();
+  }
+}
+
+
 frameRun();
