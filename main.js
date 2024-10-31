@@ -247,12 +247,12 @@ wordDisplay.appendChild(koreanWordDisplay);
 // Display the hint
 const HintDisplay = document.createElement("div");
 HintDisplay.className = "hint-display";
-wordDisplay.appendChild(HintDisplay);
+HintDisplay.appendChild(HintDisplay);
 
 // Container for input field and submit button
 const inputContainer = document.createElement("div");
 inputContainer.className = "input-container";
-wordDisplay.appendChild(inputContainer);
+inputContainer.appendChild(inputContainer);
 
 // Input field
 const inputField = document.createElement("input");
@@ -279,9 +279,10 @@ function learningKoreanWord() {
   wordDisplay.style.transform = "translate(-50%, -50%)";
   wordDisplay.innerHTML = `<div>Translate: ${currentWordPair.korean}</div>`;
 
-  // Append input field and submit button
-  wordDisplay.appendChild(inputField);
-  wordDisplay.appendChild(submitButton);
+  // Append hint, input field and submit button
+  inputContainer.appendChild(HintDisplay);
+  inputContainer.appendChild(inputField);
+  inputContainer.appendChild(submitButton);
   
   // Pause the game
   cancelAnimationFrame(animation);
