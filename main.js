@@ -300,7 +300,7 @@ function displayHint() {
     .join("");
 
   // Update the hint display element
-  hintDisplay.innerHTML = `Hint: ${hint}`;
+  hintDisplay.innerHTML = `Hint: ${hint} (* represents hidden characters)`;
 }
 
 
