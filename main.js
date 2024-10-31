@@ -272,6 +272,19 @@ function learningKoreanWord() {
   submitButton.addEventListener("click", checkAnswer);
 }
 
+
+function displayHint() {
+  // Reveal characters based on the hint counter
+  const hint = currentWordPair.english
+    .split("")
+    .map((char, index) => (index <= hintCounter ? char : "*"))
+    .join("");
+  
+  // Display hint in the word display
+  wordDisplay.innerHTML = `<div>Translate: ${currentWordPair.korean}</div><div>Hint: ${hint}</div>`;
+}
+
+
 function checkAnswer() {
   const userAnswer = inputField.value.trim().toLowerCase();
 
