@@ -87,9 +87,18 @@ class Box {
 let score = 0;
 let scoreInterval;
 
+const scoreBonus = 10; // Bonus points for correct answer
+
+// Integrate learning mode in the score update function
 function updateScore() {
   score += 1;
   document.querySelector(".score span").textContent = score;
+
+  // Trigger learning mode every 30 points
+  if (score % 30 === 0 && !learningMode) {
+    learningMode = true;
+    learningKoreanWord();
+  }
 }
 
 let timer = 0;
@@ -265,34 +274,32 @@ function learningKoreanWord() {
 
 function checkAnswer() {
   const userAnswer = inputField.value.trim().toLowerCase();
-  
+
   if (userAnswer === currentWordPair.english.toLowerCase()) {
-    // Correct answer: hide word display, reset input, and resume game
+    // Correct answer: add bonus score, hide word display, reset input, and resume game
+    score += scoreBonus;
+    document.querySelector(".score span").textContent = score;
+
     wordDisplay.style.display = "none";
     inputField.value = "";
     currentWordPair = null;
+    hintCounter = 0;
     learningMode = false;
 
     // Resume game
     frameRun();
     scoreInterval = setInterval(updateScore, 2000);
   } else {
-    // Incorrect answer: give feedback
+    // Incorrect answer: increase hintCounter if it's less than the word length
+    if (hintCounter < currentWordPair.english.length - 1) {
+      hintCounter++;
+    }
+    displayHint();
     alert("Incorrect! Try again.");
   }
 }
 
-// Integrate learning mode in the score update function
-function updateScore() {
-  score += 1;
-  document.querySelector(".score span").textContent = score;
 
-  // Trigger learning mode every 30 points
-  if (score % 30 === 0 && !learningMode) {
-    learningMode = true;
-    learningKoreanWord();
-  }
-}
 
 
 frameRun();
