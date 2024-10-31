@@ -232,7 +232,7 @@ const wordPairs = [
 
 let learningMode = false;
 let currentWordPair = null;
-let hintCounter = -1;
+let hintCounter = -2;
 
 // Create HTML elements for learning mode
 const wordDisplay = document.createElement("div");
@@ -321,7 +321,7 @@ function checkAnswer() {
 
     inputField.value = "";
     currentWordPair = null;
-    hintCounter = -1;
+    hintCounter = -2;
     learningMode = false;
 
     // Resume game
@@ -329,7 +329,7 @@ function checkAnswer() {
     scoreInterval = setInterval(updateScore, 2000);
   } else {
     // Incorrect answer: increase hintCounter if it's less than the word length
-    if (hintCounter < currentWordPair.english.length - 2) {
+    if (hintCounter < currentWordPair.english.length - 1) {
       hintCounter++;
     }
     displayHint();
