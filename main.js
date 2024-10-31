@@ -309,7 +309,10 @@ function checkAnswer() {
     score += scoreBonus;
     document.querySelector(".score span").textContent = score;
 
-    koreanWordDisplay.innerHTML = `Translate: ${currentWordPair.korean}`;
+    // Clear the Korean word display and hint display
+    koreanWordDisplay.innerHTML = ""; // Clear Korean word display
+    hintDisplay.innerHTML = "";       // Clear hint display
+
     inputField.value = "";
     currentWordPair = null;
     hintCounter = 0;
