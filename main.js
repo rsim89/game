@@ -294,12 +294,10 @@ function checkAnswer() {
     if (hintCounter < currentWordPair.english.length - 1) {
       hintCounter++;
     }
-    displayHint();
+    displayHint(); // Update and show the hint after a wrong answer
     alert("Incorrect! Try again.");
   }
 }
-
-
 
 
 frameRun();
