@@ -101,6 +101,31 @@ p {
   font-weight: bold;
   cursor: pointer;
 }
+
+.word-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.korean-word-display {
+  font-size: 24px;
+  margin-bottom: 10px; /* Space below the Korean word */
+}
+
+.input-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 10px; /* Space above the input field and button */
+}
+
+.word-input {
+  margin-bottom: 10px; /* Space below the input field */
+}
+
+
 @media (max-width: 420px) {
   .game-over .pop-up {
     max-width: 300px;
