@@ -239,15 +239,28 @@ const wordDisplay = document.createElement("div");
 wordDisplay.className = "word-display";
 document.body.appendChild(wordDisplay);
 
+// Display the Korean word
+const koreanWordDisplay = document.createElement("div");
+koreanWordDisplay.className = "korean-word-display";
+wordDisplay.appendChild(koreanWordDisplay);
+
+// Container for input field and submit button
+const inputContainer = document.createElement("div");
+inputContainer.className = "input-container";
+wordDisplay.appendChild(inputContainer);
+
+// Input field
 const inputField = document.createElement("input");
 inputField.type = "text";
 inputField.className = "word-input";
-wordDisplay.appendChild(inputField);
+inputContainer.appendChild(inputField);
 
+// Submit button
 const submitButton = document.createElement("button");
 submitButton.innerText = "Submit";
 submitButton.className = "submit-button";
-wordDisplay.appendChild(submitButton);
+inputContainer.appendChild(submitButton);
+
 
 function learningKoreanWord() {
   // Choose a random word pair
