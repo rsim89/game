@@ -232,6 +232,7 @@ const wordPairs = [
 
 let learningMode = false;
 let currentWordPair = null;
+let hintCounter = 0;
 
 // Create HTML elements for learning mode
 const wordDisplay = document.createElement("div");
