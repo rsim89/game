@@ -244,6 +244,11 @@ const koreanWordDisplay = document.createElement("div");
 koreanWordDisplay.className = "korean-word-display";
 wordDisplay.appendChild(koreanWordDisplay);
 
+// Display the hint
+const HintDisplay = document.createElement("div");
+HintDisplay.className = "hint-display";
+wordDisplay.appendChild(HintDisplay);
+
 // Container for input field and submit button
 const inputContainer = document.createElement("div");
 inputContainer.className = "input-container";
@@ -294,8 +299,8 @@ function displayHint() {
     .map((char, index) => (index <= hintCounter ? char : "*"))
     .join("");
   
-  // Display hint in the word display
-  wordDisplay.innerHTML = `<div>Translate: ${currentWordPair.korean}</div><div>Hint: ${hint}</div>`;
+  // Update only the hint display element
+  HintDisplay.innerHTML = `Hint: ${hint}`;
 }
 
 
@@ -307,7 +312,7 @@ function checkAnswer() {
     score += scoreBonus;
     document.querySelector(".score span").textContent = score;
 
-    wordDisplay.style.display = "none";
+    koreanWordDisplay.innerHTML = `Translate: ${currentWordPair.korean}`;
     inputField.value = "";
     currentWordPair = null;
     hintCounter = 0;
