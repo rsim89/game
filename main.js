@@ -220,15 +220,42 @@ function resetGame() {
 }
 
 
-// Word pairs (add more words as needed)
-const wordPairs = [
-  { korean: "사과", english: "apple" },
-  { korean: "바나나", english: "banana" },
-  { korean: "책", english: "book" },
-  { korean: "고양이", english: "cat" },
-  { korean: "개", english: "dog" },
-  { korean: "하늘", english: "sky" },
-];
+
+// Function to load word pairs from Excel file
+async function loadWordPairs(chapter, section) {
+  const filePath = `images/${chapter}_${section}.xlsx`;
+
+  // Fetch the file and read its contents
+  const response = await fetch(filePath);
+  const data = await response.arrayBuffer();
+  const workbook = XLSX.read(data, { type: "array" });
+  
+  // Assuming the first sheet contains the word pairs
+  const sheet = workbook.Sheets[workbook.SheetNames[0]];
+  const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 }); // Get data as an array of arrays
+
+  // Process rows to get Korean-English pairs, skipping the header
+  const wordPairs = rows.slice(1).map(row => ({
+    korean: row[0],  // First column for Korean
+    english: row[1]  // Second column for English
+  }));
+
+  return wordPairs;
+}
+
+// Usage example
+const chapter = 7; // Set your chapter dynamically if needed
+const section = 2; // Set your section dynamically if needed
+
+// Load word pairs at the start
+let wordPairs = [];
+
+loadWordPairs(chapter, section).then(data => {
+  wordPairs = data;
+  // Start game or learning mode now that word pairs are loaded
+  console.log(wordPairs); // Check if data loaded correctly
+});
+
 
 let learningMode = false;
 let currentWordPair = null;
