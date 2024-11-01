@@ -198,7 +198,7 @@ function spaceBarAction() {
 document.addEventListener("keydown", function (e) {
   if (e.code === "Space") {
     function spaceBarAction();
-    }
+  }
 });
 
 // 게임리셋
