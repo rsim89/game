@@ -63,7 +63,7 @@ html, button, select, p {
 }
 
 #speedSelector {
-  font-size: 12px;
+  font-size: 10px;
   padding: 4px 8px;
   background: #fff0f5;
   border: 1px solid #ffc0cb;
@@ -78,7 +78,8 @@ html, button, select, p {
   gap: 6px;
   position: absolute;
   top: 60px; /* Positioned below speed selector */
-  left: 10px;
+  left: 50%; /* Center horizontally */
+  transform: translateX(-50%); /* Adjust to be truly centered */
   padding: 6px 12px;
   background: #ffe4e1;
   color: #ff69b4;
