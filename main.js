@@ -118,7 +118,7 @@ function frameRun() {
     updateScore();
   }
   // 무작위로 장애물 소환
-  if (Math.random() < 0.02) {
+  if (Math.random() < 0.05) {
     let box = new Box();
     manyBoxes.push(box);
   }
