@@ -406,7 +406,8 @@ function checkAnswer() {
       popUp.insertBefore(correctAnswerMessage, replayBtn);
 
       // Add event listener to replay button for restarting the game and cleaning up
-      replayBtn.addEventListener("click", (resetGame()) => {
+      replayBtn.addEventListener("click", () => {
+        resetGame(); // Call resetGame to restart the game
         // Clear and hide the correct answer message
         correctAnswerMessage.innerHTML = ""; // Clear the content
         correctAnswerMessage.style.display = "none"; // Hide the element        
