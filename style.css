@@ -6,12 +6,8 @@
   font-style: normal;
 }
 
-html, button {
+html, button, select, p {
   font-family: netmarbleB;
-}
-
-h2, p {
-  margin: 0;
 }
 
 /* Game Wrap and Background Elements */
@@ -49,34 +45,47 @@ h2, p {
   z-index: 0;
 }
 
+/* Speed Selector Styling - Parent Container */
+.speedSelector {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  font-size: 12px;
+  z-index: 3;
+}
+
+.speedSelector label {
+  color: #ff69b4;
+  margin-bottom: 4px; /* Space between label and select */
+}
+
+#speedSelector {
+  font-size: 12px;
+  padding: 4px 8px;
+  background: #fff0f5;
+  border: 1px solid #ffc0cb;
+  border-radius: 8px;
+  color: #ff69b4;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
 /* Score Styling */
 .score {
   display: flex;
   gap: 6px;
   position: absolute;
-  top: 48px; /* Adjusted to make space for selector above */
+  top: 60px; /* Positioned below speed selector */
   left: 10px;
-  font-size: 14px;
+  padding: 6px 12px;
   background: #ffe4e1;
-  padding: 4px 8px;
-  border-radius: 10px;
   color: #ff69b4;
+  border-radius: 10px;
+  font-size: 14px;
   z-index: 2;
-}
-
-/* Speed Selector Styling */
-#speedSelector {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  font-size: 12px;
-  padding: 4px 8px;
-  background: #fff0f5;
-  border: 1px solid #ffc0cb;
-  border-radius: 10px;
-  color: #ff69b4;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  z-index: 3; /* Ensures it's above other elements */
 }
 
 /* Info Styling */
