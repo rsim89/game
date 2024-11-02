@@ -230,6 +230,7 @@ document.addEventListener("keydown", function (e) {
   }
 });
 
+
 // 게임리셋
 function resetGame() {
   cancelAnimationFrame(animation);
@@ -248,6 +249,12 @@ function resetGame() {
   sun.style.animationPlayState = "running";
   gameOver.style.display = "none";
 
+  // Remove the correct answer message if it exists
+  const correctAnswerMessage = gameOver.querySelector(".pop-up div");
+  if (correctAnswerMessage && correctAnswerMessage.textContent.includes("The correct answer was")) {
+    correctAnswerMessage.remove();
+  }
+
   // 스코어 인터벌 제거
   if (scoreInterval) {
     clearInterval(scoreInterval);
@@ -255,6 +262,7 @@ function resetGame() {
   // 스코어 인터벌 다시시작
   scoreInterval = setInterval(updateScore, 2000);
 }
+
 
 
 
@@ -466,13 +474,14 @@ function checkAnswer() {
       const totalScore = document.querySelector(".total-score");
       totalScore.textContent = `${score}`;
 
+      // 리셋 버튼
       const gameOver = document.querySelector(".game-over");
-      const popUp = gameOver.querySelector(".pop-up");
+      const replayBtn = document.querySelector(".replay");
 
       // Create and insert the correct answer message
       const correctAnswerMessage = document.createElement("div");
       correctAnswerMessage.innerHTML = `The correct answer was "${currentWordPair.english}" (${currentWordPair.korean}).`;
-      popUp.insertBefore(correctAnswerMessage, popUp.querySelector("button"));
+      popUp.insertBefore(correctAnswerMessage, replayBtn.querySelector(".replay"));
 
       // Display the game-over screen and pause game elements
       gameOver.style.display = "block";
