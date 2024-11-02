@@ -244,7 +244,7 @@ function resetGame() {
   frameRun();
 
   const sun = document.querySelector(".sun");
-  const gameOver = document.querySelector(".game-over");
+  const  = document.querySelector(".game-over");
   sun.style.animationPlayState = "running";
   gameOver.style.display = "none";
 
@@ -427,7 +427,6 @@ function displayHint() {
   hintDisplay.innerHTML = `Hint: ${hint} (* represents hidden characters)`;
 }
 
-// Update checkAnswer to handle null cases and maximum attempts
 function checkAnswer() {
   if (!currentWordPair) return; // Ensure currentWordPair is valid
 
@@ -461,10 +460,29 @@ function checkAnswer() {
     // Increment attempt counter and display hint if answer is incorrect
     attempts++;
     if (attempts >= maxAttempts) {
-      // Show the correct answer, Korean word, and end the game
-      hintDisplay.innerHTML = `Game Over! The correct answer was "${currentWordPair.english}" (${currentWordPair.korean}).`;
-      alert("Game Over! You've used all attempts.");
-      
+      // Show the game-over screen with the correct answer
+      const totalScore = document.querySelector(".total-score");
+      totalScore.textContent = `${score}`;
+
+      const sun = document.querySelector(".sun");
+      const gameOver = document.querySelector(".game-over");
+
+      // Update the game-over message with the correct answer and add replay button
+      gameOver.innerHTML = `
+        <div>Game Over!</div>
+        <div>The correct answer was "${currentWordPair.english}" (${currentWordPair.korean}).</div>
+        <div>Your Score: ${score}</div>
+        <button class="replay-button" onclick="resetGame()">Replay</button>
+      `;
+
+      // Display and pause game elements
+      sun.style.animationPlayState = "paused";
+      gameOver.style.display = "block";
+
+      // Stop the game loop and clear intervals
+      cancelAnimationFrame(animation);
+      clearInterval(scoreInterval);
+
       // Clear everything and reset game state
       koreanWordDisplay.innerHTML = ""; // Clear Korean word display
       inputField.value = "";
@@ -473,10 +491,6 @@ function checkAnswer() {
       hintArray = null;
       attempts = 0;
       learningMode = false;
-
-      // Resume game without the learning mode
-      frameRun();
-      scoreInterval = setInterval(updateScore, 2000);
     } else {
       // Provide an incremental hint for the incorrect attempt
       displayHint();
