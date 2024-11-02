@@ -1,30 +1,56 @@
-/* Positioning for Game Elements */
+/* Consistent Font Style */
+@font-face {
+  font-family: "netmarbleB";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_four@1.1/netmarbleB.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+html, body, button, select, span, p {
+  font-family: netmarbleB;
+  font-size: 12px; /* Smaller, consistent font size */
+  margin: 0;
+  padding: 0;
+}
+
+/* Score and Speed Selector Positioning */
 .score {
   display: flex;
-  gap: 6px;
+  gap: 4px;
   position: absolute;
-  top: 8px;
-  left: 10px; /* Adjusted spacing from the left */
-  font-size: 14px;
+  top: 10px;
+  left: 10px;
+  padding: 4px 8px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 4px;
+  font-size: 12px;
   z-index: 2;
 }
 
 #speedSelector {
   position: absolute;
-  top: 8px;
-  right: 10px; /* Adjusted spacing from the right */
-  font-size: 14px;
+  top: 10px;
+  right: 10px;
+  font-size: 12px;
   padding: 4px 8px;
-  z-index: 2;
+  background-color: rgba(255, 255, 255, 0.8);
   border: 1px solid #ccc;
   border-radius: 4px;
+  z-index: 2;
 }
 
-/* Background */
+/* Other Game Elements */
+.game-wrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+}
+
 .sun {
   position: absolute;
   top: 10px;
-  right: 20px;
+  right: 60px; /* Adjusted to fit alongside #speedSelector */
   width: 40px;
   height: 40px;
   background-image: url(./image/sun.svg);
@@ -42,107 +68,31 @@
   z-index: 0;
 }
 
-/* Game Canvas */
 #canvas {
   position: relative;
   z-index: 1;
 }
 
-/* Other Styles */
-.info {
-  width: fit-content;
-  margin: 0 auto;
-  padding: 10px;
-  border: 4px solid;
-  border-radius: 8px;
-  text-align: center;
-  cursor: default;
-}
-
-.game-over {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.4);
-  z-index: 10;
-}
-
-/* Game Over Popup Styling */
-.game-over .pop-up {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 8px;
-  align-items: center;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  max-width: 400px;
-  width: 100%;
-  height: fit-content;
-  padding: 40px 0 32px;
-  background-color: #fff;
-}
-
-/* Replay Button */
-.game-over .pop-up .replay {
-  padding: 4px 8px;
-  margin-top: 8px;
-  border: 3px solid #191919;
-  border-radius: 4px;
-  background-color: #fff;
-  font-size: 14px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-/* Word Display for Learning Mode */
-.word-display {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 20px;
-}
-
-.korean-word-display {
-  font-size: 24px;
-  margin-bottom: 10px; /* Space below the Korean word */
-}
-
-.input-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 10px; /* Space above the input field and button */
-}
-
-.word-input {
-  font-size: 16px; /* Prevents zooming on mobile */
-  margin-bottom: 10px; /* Space below the input field */
-}
-
-/* CSS for Mobile SPACE Button */
+/* Mobile and Game Over Adjustments */
 .mobile-space-bar {
-  display: none; /* Hidden by default on larger screens */
-  position: relative; /* Relative positioning to appear below the submit button */
-  margin-top: 20px; /* Space between the submit button and this button */
+  display: none;
+  position: relative;
+  margin-top: 20px;
   left: 50%;
   transform: translateX(-50%);
-  padding: 15px 30px;
-  font-size: 18px;
+  padding: 10px 20px;
+  font-size: 16px;
   background-color: #ffcc00;
   border: none;
-  border-radius: 10px;
+  border-radius: 8px;
   cursor: pointer;
 }
 
-/* Show the button on mobile screens */
 @media (max-width: 420px) {
   .mobile-space-bar {
     display: block;
+  }
+  .game-over .pop-up {
+    max-width: 300px;
   }
 }
