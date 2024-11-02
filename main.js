@@ -95,8 +95,8 @@ function getRandomLearningScore() {
   return Math.floor(Math.random() * (80 - 30 + 1)) + 30;
 }
 
-function getScoreIntervalFromSpeed(speed) {
-    return Math.max(500, 3000 - speed * 300); // Minimum interval of 500ms, adjustable by speed
+function getScoreIntervalFromSpeed(obstacleSpeed) {
+    return Math.max(500, 3000 - obstacleSpeed * 300); // Minimum interval of 500ms, adjustable by speed
 }
 
 // Integrate learning mode in the score update function
