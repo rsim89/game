@@ -203,6 +203,8 @@ document.addEventListener("keydown", function (e) {
 });
 
 function resetGame() {
+  const inputContainer = document.createElement("div");
+  inputContainer.style.display = "none"; // Initially hidden
   koreanWordDisplay.innerHTML = "";
   hintDisplay.innerHTML = "";
   cancelAnimationFrame(animation);
@@ -215,10 +217,17 @@ function resetGame() {
   jumpSwitch = false;
   lastSpacePressTime = 0;
   learningMode = true;
+  
+ // Set a new random score threshold for the next learning mode trigger
+  nextLearningModeScore = getRandomLearningScore();
+
+  // Restart the score interval based on the current game settings
+  setScoreInterval();
+  
+  // Restart game elements
   frameRun();
   document.querySelector(".sun").style.animationPlayState = "running";
   document.querySelector(".game-over").style.display = "none";
-  scoreInterval = setInterval(updateScore, 2000);
 }
 
 const filePath = localStorage.getItem("filePath");
@@ -399,6 +408,7 @@ function checkAnswer() {
       const gameOver = document.querySelector(".game-over");
       const popUp = gameOver.querySelector(".pop-up");
       const replayBtn = popUp.querySelector(".replay");
+      document.querySelector(".total-score").textContent = `${score}`;
       gameOver.style.display = "block";
       document.querySelector(".sun").style.animationPlayState = "paused";
 
