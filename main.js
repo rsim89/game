@@ -105,6 +105,10 @@ let timer = 0;
 let jumpTimer = 0;
 let manyBoxes = [];
 let animation;
+const obstacleSpeed = 4; // Adjust this value to make the boxes move faster (try values like 4, 5, or more)
+
+// In frameRun function, update the obstacle movement
+
 
 // 프레임마다 실행하기
 function frameRun() {
@@ -117,8 +121,19 @@ function frameRun() {
     currentCat = (currentCat + 1) % 2;
     updateScore();
   }
+
+  //box speed
+  manyBoxes.forEach((a, i, o) => {
+    if (a.x < 0) {
+      o.splice(i, 1); // Remove box when it goes off-screen
+    }
+    a.x -= obstacleSpeed; // Increase the speed here
+    crash(muscleCat, a);
+    a.draw();
+  });
+  
   // 무작위로 장애물 소환
-  if (Math.random() < 0.05) {
+  if (Math.random() < 0.01) {
     let box = new Box();
     manyBoxes.push(box);
   }
