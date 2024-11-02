@@ -302,6 +302,7 @@ wordDisplay.appendChild(inputContainer);
 const inputField = document.createElement("input");
 inputField.type = "text";
 inputField.className = "word-input";
+inputContainer.style.display = "none"; // Initially hidden
 inputContainer.appendChild(inputField);
 
 const submitButton = document.createElement("button");
@@ -311,16 +312,25 @@ inputContainer.appendChild(submitButton);
 
 function learningKoreanWord() {
   currentWordPair = wordPairs[Math.floor(Math.random() * wordPairs.length)];
+
   wordDisplay.style.display = "flex";
   wordDisplay.style.position = "absolute";
   wordDisplay.style.top = "50%";
   wordDisplay.style.left = "50%";
   wordDisplay.style.transform = "translate(-50%, -50%)";
+  
+  // Display Korean word and make input container visible
   koreanWordDisplay.innerHTML = `Korean: ${currentWordPair.korean}`;
+  inputContainer.style.display = "block"; // Show input container
+
   wordDisplay.appendChild(hintDisplay);
   wordDisplay.appendChild(inputContainer);
+
+  // Pause the game
   cancelAnimationFrame(animation);
   clearInterval(scoreInterval);
+
+  // Attach the event listener for the submit button
   submitButton.removeEventListener("click", checkAnswer);
   submitButton.addEventListener("click", checkAnswer);
 }
