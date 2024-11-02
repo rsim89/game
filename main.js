@@ -237,6 +237,7 @@ function resetGame() {
   clearInterval(scoreInterval);
   score = 0;
   document.querySelector(".score span").textContent = score;
+  koreanWordDisplay.innerHTML = ""; // Clear Korean word display
   manyBoxes = [];
   currentCat = 0;
   jumpSwitch = false;
@@ -248,12 +249,6 @@ function resetGame() {
   const gameOver = document.querySelector(".game-over");
   sun.style.animationPlayState = "running";
   gameOver.style.display = "none";
-
-  // Remove the correct answer message if it exists
-  const correctAnswerMessage = gameOver.querySelector(".pop-up div");
-  if (correctAnswerMessage && correctAnswerMessage.textContent.includes("The correct answer was")) {
-    correctAnswerMessage.remove();
-  }
 
   // 스코어 인터벌 제거
   if (scoreInterval) {
@@ -470,36 +465,22 @@ function checkAnswer() {
     // Increment attempt counter and display hint if answer is incorrect
     attempts++;
     if (attempts >= maxAttempts) {
-      // Display the correct answer message and game-over popup
-      const totalScore = document.querySelector(".total-score");
-      totalScore.textContent = `${score}`;
-
-      // 리셋 버튼
-      const gameOver = document.querySelector(".game-over");
-      const replayBtn = document.querySelector(".replay");
-
       // Create and insert the correct answer message
       const correctAnswerMessage = document.createElement("div");
       correctAnswerMessage.innerHTML = `The correct answer was "${currentWordPair.english}" (${currentWordPair.korean}).`;
-      popUp.insertBefore(correctAnswerMessage, replayBtn.querySelector(".replay"));
-
-      // Display the game-over screen and pause game elements
-      gameOver.style.display = "block";
-      const sun = document.querySelector(".sun");
-      sun.style.animationPlayState = "paused";
-
+      
       // Stop the game loop and clear intervals
       cancelAnimationFrame(animation);
       clearInterval(scoreInterval);
+      
+      // Display the game-over screen and pause game elements
+      const gameOver = document.querySelector(".game-over");
+      gameOver.style.display = "block";
+      const sun = document.querySelector(".sun");
+      sun.style.animationPlayState = "paused";
+      gameOver.insertBefore(correctAnswerMessage, gameOver.querySelector("replayBtn"));
 
-      // Clear everything and reset game state
-      koreanWordDisplay.innerHTML = ""; // Clear Korean word display
-      inputField.value = "";
-      currentWordPair = null;
-      hintCounter = 0;
-      hintArray = null;
-      attempts = 0;
-      learningMode = false;
+
     } else {
       // Provide an incremental hint for the incorrect attempt
       displayHint();
