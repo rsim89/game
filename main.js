@@ -95,6 +95,10 @@ function getRandomLearningScore() {
   return Math.floor(Math.random() * (80 - 30 + 1)) + 30;
 }
 
+function getScoreIntervalFromSpeed(speed) {
+    return Math.max(500, 3000 - speed * 300); // Minimum interval of 500ms, adjustable by speed
+}
+
 // Integrate learning mode in the score update function
 function updateScore() {
   score += 1;
@@ -108,11 +112,19 @@ function updateScore() {
   }
 }
 
+function setScoreInterval() {
+    if (scoreInterval) clearInterval(scoreInterval);
+    const interval = getScoreIntervalFromSpeed(obstacleSpeed);
+    scoreInterval = setInterval(updateScore, interval);
+}
+
 
 // Listen for changes on the speed selector
 document.getElementById("speedSelector").addEventListener("change", (event) => {
-  obstacleSpeed = parseInt(event.target.value);
+    obstacleSpeed = parseInt(event.target.value);
+    setScoreInterval(); // Reset score interval with the new speed
 });
+
 
 let timer = 0;
 let jumpTimer = 0;
@@ -325,7 +337,7 @@ function learningKoreanWord() {
   wordDisplay.style.top = "50%";
   wordDisplay.style.left = "50%";
   wordDisplay.style.transform = "translate(-50%, -50%)";
-  koreanWordDisplay.innerHTML = `Translate: ${currentWordPair.korean}`;
+  koreanWordDisplay.innerHTML = `Korean: ${currentWordPair.korean}`;
 
   // Append hint, input field, and submit button
   wordDisplay.appendChild(hintDisplay); // Corrected: explicitly append hintDisplay to wordDisplay
