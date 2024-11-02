@@ -346,14 +346,20 @@ function displayHint() {
 
 function checkAnswer() {
   if (!currentWordPair) return;
+
   const userAnswer = inputField.value.trim().toLowerCase();
   const correctAnswer = currentWordPair.english.toLowerCase();
+  
+  // Remove spaces and punctuation for comparison
   const sanitizedUserAnswer = userAnswer.replace(/[\s,.'!?]/g, "");
   const sanitizedCorrectAnswer = correctAnswer.replace(/[\s,.'!?]/g, "");
 
   if (sanitizedUserAnswer === sanitizedCorrectAnswer) {
+    // Correct answer handling
     score += scoreBonus;
     document.querySelector(".score span").textContent = score;
+
+    // Clear word display and reset learning mode
     koreanWordDisplay.innerHTML = "";
     hintDisplay.innerHTML = "";
     inputField.value = "";
@@ -362,20 +368,36 @@ function checkAnswer() {
     hintArray = null;
     attempts = 0;
     learningMode = false;
+
+    // Resume the game
     frameRun();
     scoreInterval = setInterval(updateScore, 2000);
+
   } else {
+    // Incorrect answer handling
     attempts++;
+    
     if (attempts >= maxAttempts) {
+      // Maximum attempts reached, show correct answer and game-over screen
       const correctAnswerMessage = document.createElement("div");
       correctAnswerMessage.innerHTML = `The correct answer was "${currentWordPair.english}" (${currentWordPair.korean}).`;
+
+      // Stop game animations and scoring
       cancelAnimationFrame(animation);
       clearInterval(scoreInterval);
+
+      // Display game-over screen with correct answer message
       const gameOver = document.querySelector(".game-over");
       gameOver.style.display = "block";
+      gameOver.insertBefore(correctAnswerMessage, document.querySelector(".replay"));
       document.querySelector(".sun").style.animationPlayState = "paused";
-      gameOver.insertBefore(correctAnswerMessage, replayBtn);
+
+      // Add event listener to replay button for restarting the game
+      const replayBtn = document.querySelector(".replay");
+      replayBtn.addEventListener("click", resetGame);
+
     } else {
+      // Provide hint and prompt user to try again
       displayHint();
       alert("Incorrect! Try again.");
     }
