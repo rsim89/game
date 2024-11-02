@@ -141,7 +141,7 @@ function frameRun() {
   });
   
   // 무작위로 장애물 소환
-  if (Math.random() < 0.01) {
+  if (Math.random() < 0.05) {
     let box = new Box();
     manyBoxes.push(box);
   }
