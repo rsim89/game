@@ -208,11 +208,13 @@ function resetGame() {
   cancelAnimationFrame(animation);
   clearInterval(scoreInterval);
   score = 0;
+  attempt = 0;
   document.querySelector(".score span").textContent = score;
   manyBoxes = [];
   currentCat = 0;
   jumpSwitch = false;
   lastSpacePressTime = 0;
+  learningMode = true;
   frameRun();
   document.querySelector(".sun").style.animationPlayState = "running";
   document.querySelector(".game-over").style.display = "none";
@@ -342,7 +344,7 @@ function displayHint() {
       revealed++;
     }
   }
-  hintDisplay.innerHTML = `Hint: ${hintArray.join("")} (* represents hidden characters)`;
+  hintDisplay.innerHTML = `Hint: ${hintArray.join("")} (* = hidden characters)`;
 }
 
 function checkAnswer() {
