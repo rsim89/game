@@ -109,11 +109,16 @@ function updateScore() {
 }
 
 
+// Listen for changes on the speed selector
+document.getElementById("speedSelector").addEventListener("change", (event) => {
+  obstacleSpeed = parseInt(event.target.value);
+});
+
 let timer = 0;
 let jumpTimer = 0;
 let manyBoxes = [];
 let animation;
-const obstacleSpeed = 6; // Adjust this value to make the boxes move faster (try values like 4, 5, or more)
+let obstacleSpeed = 6; // Default speed // Adjust this value to make the boxes move faster (try values like 4, 5, or more)
 
 // In frameRun function, update the obstacle movement
 
@@ -130,31 +135,21 @@ function frameRun() {
     updateScore();
   }
 
-  //box speed
+  // Update obstacles with dynamic speed
   manyBoxes.forEach((a, i, o) => {
     if (a.x < 0) {
       o.splice(i, 1); // Remove box when it goes off-screen
     }
-    a.x -= obstacleSpeed; // Increase the speed here
+    a.x -= obstacleSpeed; // Use dynamic speed here
     crash(muscleCat, a);
     a.draw();
   });
-  
+
   // 무작위로 장애물 소환
   if (Math.random() < 0.05) {
     let box = new Box();
     manyBoxes.push(box);
   }
-  // x좌표가 0미만이면 제거
-  manyBoxes.forEach((a, i, o) => {
-    if (a.x < 0) {
-      o.splice(i, 1);
-    }
-    a.x -= 2;
-    // 충돌 체크
-    crash(muscleCat, a);
-    a.draw();
-  });
 
   // 점프!
   if (jumpSwitch == true) {
