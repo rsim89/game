@@ -42,24 +42,32 @@ catImages[0].src = "data:image/svg+xml," + encodeURIComponent(catSvg1);
 catImages[1].src = "data:image/svg+xml," + encodeURIComponent(catSvg2);
 
 let currentCat = 0;
-
 let muscleCat = {
   x: 20,
   y: 120,
   width: 50,
   height: 60,
   draw() {
-    ctx.drawImage(catImages[currentCat], this.x, this.y, this.width, this.height);
+    ctx.drawImage(
+      catImages[currentCat],
+      this.x,
+      this.y,
+      this.width,
+      this.height
+    );
   },
   jump() {
-    if (this.y > 40) this.y -= 10;
+    if (this.y > 40) {
+      this.y -= 10;
+    }
   },
   fall() {
-    if (this.y < 120) this.y += 10;
+    if (this.y < 120) {
+      this.y += 10;
+    }
   },
 };
 
-// Obstacles
 let boxImage = new Image();
 boxImage.src = "./image/box.svg";
 class Box {
@@ -74,50 +82,11 @@ class Box {
   }
 }
 
-// Score & Learning Mode
 let score = 0;
 let scoreInterval;
 let nextLearningModeScore = getRandomLearningScore();
-const scoreBonus = 15;
-const defaultWordPairs = [
-    { korean: "안녕하세요", english: "hello" },
-    { korean: "사랑", english: "love" },
-    { korean: "친구", english: "friend" },
-    { korean: "가족", english: "family" },
-    { korean: "음악", english: "music" },
-    { korean: "책", english: "book" },
-    { korean: "행복", english: "happiness" },
-    { korean: "고양이", english: "cat" },
-    { korean: "강아지", english: "dog" },
-    { korean: "학교", english: "school" },
-    { korean: "감사합니다", english: "thank you" },
-    { korean: "음식", english: "food" },
-    { korean: "여행", english: "travel" },
-    { korean: "꿈", english: "dream" },
-    { korean: "바다", english: "sea" },
-    { korean: "산", english: "mountain" },
-    { korean: "영화", english: "movie" },
-    { korean: "커피", english: "coffee" },
-    { korean: "날씨", english: "weather" },
-    { korean: "시간", english: "time" },
-    { korean: "아침", english: "morning" },
-    { korean: "저녁", english: "evening" },
-    { korean: "꽃", english: "flower" },
-    { korean: "사과", english: "apple" },
-    { korean: "배우다", english: "learn" },
-    { korean: "공원", english: "park" },
-    { korean: "운동", english: "exercise" },
-    { korean: "의사", english: "doctor" },
-    { korean: "학생", english: "student" },
-    { korean: "선생님", english: "teacher" },
-    { korean: "컴퓨터", english: "computer" }
-];
-let learningMode = false;
-let currentWordPair = null;
-let attempts = 0;
-let hintCounter = -2;
 
-// Generates a random score between 30 and 80 for the next learning mode trigger
+const scoreBonus = 15;
 function getRandomLearningScore() {
   return Math.floor(Math.random() * (80 - 30 + 1)) + 30;
 }
@@ -129,7 +98,6 @@ function getScoreIntervalFromSpeed(obstacleSpeed) {
 function updateScore() {
   score += 1;
   document.querySelector(".score span").textContent = score;
-
   if (score >= nextLearningModeScore && !learningMode) {
     learningMode = true;
     learningKoreanWord();
@@ -139,7 +107,8 @@ function updateScore() {
 
 function setScoreInterval() {
   if (scoreInterval) clearInterval(scoreInterval);
-  scoreInterval = setInterval(updateScore, getScoreIntervalFromSpeed(obstacleSpeed));
+  const interval = getScoreIntervalFromSpeed(obstacleSpeed);
+  scoreInterval = setInterval(updateScore, interval);
 }
 
 document.getElementById("speedSelector").addEventListener("change", (event) => {
@@ -152,8 +121,6 @@ let jumpTimer = 0;
 let manyBoxes = [];
 let animation;
 let obstacleSpeed = 6;
-let jumpSwitch = false;
-let lastSpacePressTime = 0;
 
 function frameRun() {
   animation = requestAnimationFrame(frameRun);
@@ -166,26 +133,32 @@ function frameRun() {
   }
 
   manyBoxes.forEach((a, i, o) => {
-    if (a.x < 0) o.splice(i, 1);
+    if (a.x < 0) {
+      o.splice(i, 1);
+    }
     a.x -= obstacleSpeed;
     crash(muscleCat, a);
     a.draw();
   });
 
-  if (Math.random() < 0.05) manyBoxes.push(new Box());
-
-  if (jumpSwitch) {
-    muscleCat.jump();
-    jumpTimer++;
-  } else if (muscleCat.y < 120) {
-    muscleCat.y++;
+  if (Math.random() < 0.05) {
+    let box = new Box();
+    manyBoxes.push(box);
   }
 
+  if (jumpSwitch == true) {
+    muscleCat.jump();
+    jumpTimer++;
+  }
+  if (jumpSwitch == false) {
+    if (muscleCat.y < 120) {
+      muscleCat.y++;
+    }
+  }
   if (jumpTimer > 10) {
     jumpSwitch = false;
     jumpTimer = 0;
   }
-
   muscleCat.draw();
 }
 
@@ -193,27 +166,40 @@ function crash(muscleCat, box) {
   let xCalculate = box.x - (muscleCat.x + muscleCat.width);
   let yCalculate = box.y - (muscleCat.y + muscleCat.height);
   if (xCalculate < 0 && yCalculate < 0) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     cancelAnimationFrame(animation);
     clearInterval(scoreInterval);
     document.querySelector(".total-score").textContent = `${score}`;
-    document.querySelector(".sun").style.animationPlayState = "paused";
-    document.querySelector(".game-over").style.display = "block";
+    const sun = document.querySelector(".sun");
+    const gameOver = document.querySelector(".game-over");
+    sun.style.animationPlayState = "paused";
+    gameOver.style.display = "block";
   }
 }
 
+scoreInterval = setInterval(updateScore, 2000);
+
 const replayBtn = document.querySelector(".replay");
-replayBtn.addEventListener("click", resetGame);
+replayBtn.addEventListener("click", () => {
+  resetGame();
+});
+
+var jumpSwitch = false;
+let lastSpacePressTime = 0;
 
 function spaceBarAction() {
   const currentTime = Date.now();
-  if (currentTime - lastSpacePressTime > 500) {
+  const timeSinceLastPress = currentTime - lastSpacePressTime;
+  if (timeSinceLastPress > 500) {
     jumpSwitch = true;
     lastSpacePressTime = currentTime;
   }
 }
 
-document.addEventListener("keydown", (e) => {
-  if (e.code === "Space") spaceBarAction();
+document.addEventListener("keydown", function (e) {
+  if (e.code === "Space") {
+    spaceBarAction();
+  }
 });
 
 function resetGame() {
@@ -233,51 +219,123 @@ function resetGame() {
 }
 
 const filePath = localStorage.getItem("filePath");
+const defaultWordPairs = [
+  { korean: "안녕하세요", english: "hello" },
+  { korean: "사랑", english: "love" },
+  { korean: "친구", english: "friend" },
+  { korean: "가족", english: "family" },
+  { korean: "음악", english: "music" },
+  { korean: "책", english: "book" },
+  { korean: "행복", english: "happiness" },
+  { korean: "고양이", english: "cat" },
+  { korean: "강아지", english: "dog" },
+  { korean: "학교", english: "school" },
+  { korean: "감사합니다", english: "thank you" },
+  { korean: "음식", english: "food" },
+  { korean: "여행", english: "travel" },
+  { korean: "꿈", english: "dream" },
+  { korean: "바다", english: "sea" },
+  { korean: "산", english: "mountain" },
+  { korean: "영화", english: "movie" },
+  { korean: "커피", english: "coffee" },
+  { korean: "날씨", english: "weather" },
+  { korean: "시간", english: "time" },
+  { korean: "아침", english: "morning" },
+  { korean: "저녁", english: "evening" },
+  { korean: "꽃", english: "flower" },
+  { korean: "사과", english: "apple" },
+  { korean: "배우다", english: "learn" },
+  { korean: "공원", english: "park" },
+  { korean: "운동", english: "exercise" },
+  { korean: "의사", english: "doctor" },
+  { korean: "학생", english: "student" },
+  { korean: "선생님", english: "teacher" },
+  { korean: "컴퓨터", english: "computer" },
+];
 
 async function loadWordPairs(filePath) {
   try {
     const response = await fetch(filePath);
     const data = await response.arrayBuffer();
     const workbook = XLSX.read(data, { type: "array" });
-    const rows = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], { header: 1 });
-    return rows.slice(1).map((row) => ({ korean: row[0], english: row[1] }));
-  } catch {
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+    return rows.slice(1).map(row => ({ korean: row[0], english: row[1] }));
+  } catch (error) {
+    console.error("Error loading word pairs:", error);
     return [];
   }
 }
 
 let wordPairs = [];
 if (filePath) {
-  loadWordPairs(filePath).then((data) => {
+  loadWordPairs(filePath).then(data => {
     wordPairs = data.length > 0 ? data : defaultWordPairs;
   });
 } else {
   wordPairs = defaultWordPairs;
 }
 
+let learningMode = false;
+let currentWordPair = null;
+let hintCounter = -2;
+
+const wordDisplay = document.createElement("div");
+wordDisplay.className = "word-display";
+document.body.appendChild(wordDisplay);
+
+const koreanWordDisplay = document.createElement("div");
+koreanWordDisplay.className = "korean-word-display";
+wordDisplay.appendChild(koreanWordDisplay);
+
+const hintDisplay = document.createElement("div");
+hintDisplay.className = "hint-display";
+wordDisplay.appendChild(hintDisplay);
+
+const inputContainer = document.createElement("div");
+inputContainer.className = "input-container";
+wordDisplay.appendChild(inputContainer);
+
+const inputField = document.createElement("input");
+inputField.type = "text";
+inputField.className = "word-input";
+inputContainer.appendChild(inputField);
+
+const submitButton = document.createElement("button");
+submitButton.innerText = "Submit";
+submitButton.className = "submit-button";
+inputContainer.appendChild(submitButton);
+
 function learningKoreanWord() {
   currentWordPair = wordPairs[Math.floor(Math.random() * wordPairs.length)];
-  koreanWordDisplay.innerHTML = `Korean: ${currentWordPair.korean}`;
   wordDisplay.style.display = "flex";
   wordDisplay.style.position = "absolute";
   wordDisplay.style.top = "50%";
   wordDisplay.style.left = "50%";
   wordDisplay.style.transform = "translate(-50%, -50%)";
+  koreanWordDisplay.innerHTML = `Korean: ${currentWordPair.korean}`;
+  wordDisplay.appendChild(hintDisplay);
+  wordDisplay.appendChild(inputContainer);
   cancelAnimationFrame(animation);
   clearInterval(scoreInterval);
   submitButton.removeEventListener("click", checkAnswer);
   submitButton.addEventListener("click", checkAnswer);
 }
 
+let maxAttempts = 5;
+let attempts = 0;
+let hintArray;
+
 function displayHint() {
   const word = currentWordPair.english;
-  const revealCount = word.length > 10 ? 2 : 1;
+  const hintLength = word.length;
+  const revealCount = hintLength > 10 ? 2 : 1;
   if (!hintArray) {
-    hintArray = word.split("").map((char) => (/[\s,.'!?]/.test(char) ? char : "*"));
+    hintArray = word.split("").map((char) => /[\s,.'!?]/.test(char) ? char : "*");
   }
   let revealed = 0;
   while (revealed < revealCount) {
-    const randomIndex = Math.floor(Math.random() * word.length);
+    const randomIndex = Math.floor(Math.random() * hintLength);
     if (hintArray[randomIndex] === "*") {
       hintArray[randomIndex] = word[randomIndex];
       revealed++;
@@ -287,35 +345,41 @@ function displayHint() {
 }
 
 function checkAnswer() {
-  const userAnswer = inputField.value.trim().toLowerCase().replace(/[\s,.'!?]/g, "");
-  const correctAnswer = currentWordPair.english.toLowerCase().replace(/[\s,.'!?]/g, "");
-  if (userAnswer === correctAnswer) {
+  if (!currentWordPair) return;
+  const userAnswer = inputField.value.trim().toLowerCase();
+  const correctAnswer = currentWordPair.english.toLowerCase();
+  const sanitizedUserAnswer = userAnswer.replace(/[\s,.'!?]/g, "");
+  const sanitizedCorrectAnswer = correctAnswer.replace(/[\s,.'!?]/g, "");
+
+  if (sanitizedUserAnswer === sanitizedCorrectAnswer) {
     score += scoreBonus;
     document.querySelector(".score span").textContent = score;
     koreanWordDisplay.innerHTML = "";
     hintDisplay.innerHTML = "";
     inputField.value = "";
     currentWordPair = null;
+    hintCounter = 0;
+    hintArray = null;
+    attempts = 0;
     learningMode = false;
     frameRun();
     scoreInterval = setInterval(updateScore, 2000);
   } else {
     attempts++;
     if (attempts >= maxAttempts) {
-      displayGameOver();
+      const correctAnswerMessage = document.createElement("div");
+      correctAnswerMessage.innerHTML = `The correct answer was "${currentWordPair.english}" (${currentWordPair.korean}).`;
+      cancelAnimationFrame(animation);
+      clearInterval(scoreInterval);
+      const gameOver = document.querySelector(".game-over");
+      gameOver.style.display = "block";
+      document.querySelector(".sun").style.animationPlayState = "paused";
+      gameOver.insertBefore(correctAnswerMessage, replayBtn);
     } else {
       displayHint();
       alert("Incorrect! Try again.");
     }
   }
-}
-
-function displayGameOver() {
-  const correctAnswerMessage = document.createElement("div");
-  correctAnswerMessage.innerHTML = `The correct answer was "${currentWordPair.english}" (${currentWordPair.korean}).`;
-  document.querySelector(".sun").style.animationPlayState = "paused";
-  document.querySelector(".game-over").insertBefore(correctAnswerMessage, replayBtn);
-  document.querySelector(".game-over").style.display = "block";
 }
 
 frameRun();
