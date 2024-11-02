@@ -202,12 +202,13 @@ document.addEventListener("keydown", function (e) {
   }
 });
 
-function resetGame() {
+function resetGame() {  
   cancelAnimationFrame(animation);
   clearInterval(scoreInterval);
+  koreanWordDisplay.innerHTML = "";
+  hintDisplay.innerHTML = "";
   score = 0;
   document.querySelector(".score span").textContent = score;
-  koreanWordDisplay.innerHTML = "";
   manyBoxes = [];
   currentCat = 0;
   jumpSwitch = false;
@@ -349,8 +350,6 @@ function checkAnswer() {
 
   const userAnswer = inputField.value.trim().toLowerCase();
   const correctAnswer = currentWordPair.english.toLowerCase();
-  
-  // Remove spaces and punctuation for comparison
   const sanitizedUserAnswer = userAnswer.replace(/[\s,.'!?]/g, "");
   const sanitizedCorrectAnswer = correctAnswer.replace(/[\s,.'!?]/g, "");
 
@@ -358,8 +357,6 @@ function checkAnswer() {
     // Correct answer handling
     score += scoreBonus;
     document.querySelector(".score span").textContent = score;
-
-    // Clear word display and reset learning mode
     koreanWordDisplay.innerHTML = "";
     hintDisplay.innerHTML = "";
     inputField.value = "";
@@ -368,8 +365,6 @@ function checkAnswer() {
     hintArray = null;
     attempts = 0;
     learningMode = false;
-
-    // Resume the game
     frameRun();
     scoreInterval = setInterval(updateScore, 2000);
 
@@ -388,12 +383,15 @@ function checkAnswer() {
 
       // Display game-over screen with correct answer message
       const gameOver = document.querySelector(".game-over");
+      const popUp = gameOver.querySelector(".pop-up"); // Select the .pop-up element
+      const replayBtn = popUp.querySelector(".replay"); // Select the replay button within .pop-up
       gameOver.style.display = "block";
-      gameOver.insertBefore(correctAnswerMessage, document.querySelector(".replay"));
       document.querySelector(".sun").style.animationPlayState = "paused";
 
+      // Insert the correct answer message before the replay button
+      popUp.insertBefore(correctAnswerMessage, replayBtn);
+
       // Add event listener to replay button for restarting the game
-      const replayBtn = document.querySelector(".replay");
       replayBtn.addEventListener("click", resetGame);
 
     } else {
