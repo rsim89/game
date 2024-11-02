@@ -246,41 +246,37 @@ function resetGame() {
 
 
 
-// Function to load word pairs from Excel file
-async function loadWordPairs(chapter, section) {
-  const filePath = `images/${chapter}_${section}.xlsx`;
+// Retrieve the stored file path
+const filePath = localStorage.getItem("filePath");
 
-  // Fetch the file and read its contents
-  const response = await fetch(filePath);
-  const data = await response.arrayBuffer();
-  const workbook = XLSX.read(data, { type: "array" });
-  
-  // Assuming the first sheet contains the word pairs
-  const sheet = workbook.Sheets[workbook.SheetNames[0]];
-  const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 }); // Get data as an array of arrays
+// Function to load word pairs from the specified file
+async function loadWordPairs(filePath) {
+    try {
+        const response = await fetch(filePath);
+        const data = await response.arrayBuffer();
+        const workbook = XLSX.read(data, { type: "array" });
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
 
-  // Process rows to get Korean-English pairs, skipping the header
-  const wordPairs = rows.slice(1).map(row => ({
-    korean: row[0],  // First column for Korean
-    english: row[1]  // Second column for English
-  }));
+        const wordPairs = rows.slice(1).map(row => ({
+            korean: row[0],
+            english: row[1]
+        }));
 
-  return wordPairs;
+        return wordPairs;
+    } catch (error) {
+        console.error("Error loading word pairs:", error);
+        return [];
+    }
 }
 
-// Usage example
-const chapter = 7; // Set your chapter dynamically if needed
-const section = 2; // Set your section dynamically if needed
-
-// Load word pairs at the start
+// Load word pairs using the file path from webpage1
 let wordPairs = [];
 
-loadWordPairs(chapter, section).then(data => {
-  wordPairs = data;
-  // Start game or learning mode now that word pairs are loaded
-  console.log(wordPairs); // Check if data loaded correctly
+loadWordPairs(filePath).then(data => {
+    wordPairs = data;
+    console.log("Loaded word pairs:", wordPairs);
 });
-
 
 let learningMode = false;
 let currentWordPair = null;
