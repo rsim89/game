@@ -202,12 +202,7 @@ document.addEventListener("keydown", function (e) {
   }
 });
 
-function resetGame() {  
-  const correctAnswerMessage = document.querySelector(".game-over .pop-up div");
-  if (correctAnswerMessage) {
-  correctAnswerMessage.innerHTML = ""; // Clear the content
-  correctAnswerMessage.style.display = "none"; // Hide the element
-  }  
+function resetGame() {
   koreanWordDisplay.innerHTML = "";
   hintDisplay.innerHTML = "";
   cancelAnimationFrame(animation);
@@ -399,7 +394,7 @@ function checkAnswer() {
       popUp.insertBefore(correctAnswerMessage, replayBtn);
 
       // Add event listener to replay button for restarting the game and cleaning up
-      replayBtn.addEventListener("click", () => {
+      replayBtn.addEventListener("click", (resetGame()) => {
         // Clear and hide the correct answer message
         correctAnswerMessage.innerHTML = ""; // Clear the content
         correctAnswerMessage.style.display = "none"; // Hide the element        
