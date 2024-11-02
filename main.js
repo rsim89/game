@@ -393,29 +393,33 @@ function learningKoreanWord() {
   submitButton.addEventListener("click", checkAnswer); // Add fresh event listener
 }
 
+let maxAttempts = 5; // Maximum number of attempts allowed
+let attempts = 0; // Counter for user attempts
+
 function displayHint() {
   const word = currentWordPair.english;
   const hintLength = word.length;
-  
+
   // Determine the number of characters to reveal based on word length
   const revealCount = hintLength > 10 ? 2 : 1;
-  
-  // Array to hold revealed characters and masked ones as '*'
-  const hintArray = word.split("").map((char, index) => {
-    // Keep spaces and punctuation visible
-    return /[\s,.'!?]/.test(char) ? char : "*";
-  });
 
-  // Randomly reveal characters up to the reveal count
+  // Initialize or update the hintArray to progressively reveal characters
+  if (!hintArray) {
+    hintArray = word.split("").map((char) => {
+      // Keep spaces and punctuation visible initially
+      return /[\s,.'!?]/.test(char) ? char : "*";
+    });
+  }
+
+  // Reveal incrementally by updating the hint array at each hint stage
   let revealed = 0;
-  while (revealed < revealCount) {
-    const randomIndex = Math.floor(Math.random() * hintLength);
-
-    // Only reveal if it's currently masked
-    if (hintArray[randomIndex] === "*") {
-      hintArray[randomIndex] = word[randomIndex];
+  while (revealed < revealCount && hintCounter < hintLength) {
+    const charIndex = hintCounter;
+    if (hintArray[charIndex] === "*") {
+      hintArray[charIndex] = word[charIndex];
       revealed++;
     }
+    hintCounter++;
   }
 
   // Convert hint array back to string and display
@@ -423,7 +427,7 @@ function displayHint() {
   hintDisplay.innerHTML = `Hint: ${hint} (* represents hidden characters)`;
 }
 
-// Update checkAnswer to handle null cases
+// Update checkAnswer to handle null cases and maximum attempts
 function checkAnswer() {
   if (!currentWordPair) return; // Ensure currentWordPair is valid
 
@@ -445,21 +449,40 @@ function checkAnswer() {
 
     inputField.value = "";
     currentWordPair = null;
-    hintCounter = -2;
+    hintCounter = 0;
+    hintArray = null;
+    attempts = 0;
     learningMode = false;
 
     // Resume game
     frameRun();
     scoreInterval = setInterval(updateScore, 2000);
   } else {
-    // Incorrect answer: increase hintCounter if it's less than the word length
-    if (hintCounter < currentWordPair.english.length - 1) {
-      hintCounter++;
+    // Increment attempt counter and display hint if answer is incorrect
+    attempts++;
+    if (attempts >= maxAttempts) {
+      // Show the correct answer, Korean word, and end the game
+      hintDisplay.innerHTML = `Game Over! The correct answer was "${currentWordPair.english}" (${currentWordPair.korean}).`;
+      alert("Game Over! You've used all attempts.");
+      
+      // Clear everything and reset game state
+      koreanWordDisplay.innerHTML = ""; // Clear Korean word display
+      inputField.value = "";
+      currentWordPair = null;
+      hintCounter = 0;
+      hintArray = null;
+      attempts = 0;
+      learningMode = false;
+
+      // Resume game without the learning mode
+      frameRun();
+      scoreInterval = setInterval(updateScore, 2000);
+    } else {
+      // Provide an incremental hint for the incorrect attempt
+      displayHint();
+      alert("Incorrect! Try again.");
     }
-    displayHint();
-    alert("Incorrect! Try again.");
   }
 }
-
 
 frameRun();
