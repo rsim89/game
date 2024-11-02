@@ -261,6 +261,41 @@ function resetGame() {
 // Retrieve the stored file path
 const filePath = localStorage.getItem("filePath");
 
+// Default word pairs if filePath is undefined
+const defaultWordPairs = [
+    { korean: "안녕하세요", english: "hello" },
+    { korean: "사랑", english: "love" },
+    { korean: "친구", english: "friend" },
+    { korean: "가족", english: "family" },
+    { korean: "음악", english: "music" },
+    { korean: "책", english: "book" },
+    { korean: "행복", english: "happiness" },
+    { korean: "고양이", english: "cat" },
+    { korean: "강아지", english: "dog" },
+    { korean: "학교", english: "school" },
+    { korean: "감사합니다", english: "thank you" },
+    { korean: "음식", english: "food" },
+    { korean: "여행", english: "travel" },
+    { korean: "꿈", english: "dream" },
+    { korean: "바다", english: "sea" },
+    { korean: "산", english: "mountain" },
+    { korean: "영화", english: "movie" },
+    { korean: "커피", english: "coffee" },
+    { korean: "날씨", english: "weather" },
+    { korean: "시간", english: "time" },
+    { korean: "아침", english: "morning" },
+    { korean: "저녁", english: "evening" },
+    { korean: "꽃", english: "flower" },
+    { korean: "사과", english: "apple" },
+    { korean: "배우다", english: "learn" },
+    { korean: "공원", english: "park" },
+    { korean: "운동", english: "exercise" },
+    { korean: "의사", english: "doctor" },
+    { korean: "학생", english: "student" },
+    { korean: "선생님", english: "teacher" },
+    { korean: "컴퓨터", english: "computer" }
+];
+
 // Function to load word pairs from the specified file
 async function loadWordPairs(filePath) {
     try {
@@ -285,10 +320,16 @@ async function loadWordPairs(filePath) {
 // Load word pairs using the file path from webpage1
 let wordPairs = [];
 
-loadWordPairs(filePath).then(data => {
-    wordPairs = data;
-    console.log("Loaded word pairs:", wordPairs);
-});
+if (filePath) {
+    loadWordPairs(filePath).then(data => {
+        wordPairs = data.length > 0 ? data : defaultWordPairs;
+        console.log("Loaded word pairs:", wordPairs);
+    });
+} else {
+    // Use default word pairs if filePath is undefined
+    wordPairs = defaultWordPairs;
+    console.log("Using default word pairs:", wordPairs);
+}
 
 let learningMode = false;
 let currentWordPair = null;
@@ -353,24 +394,47 @@ function learningKoreanWord() {
 }
 
 function displayHint() {
-  // Reveal characters based on the hint counter but stop at length - 1
-  const hint = currentWordPair.english
-    .split("")
-    .map((char, index) => (index <= hintCounter ? char : "*"))
-    .join("");
+  const word = currentWordPair.english;
+  const hintLength = word.length;
+  
+  // Determine the number of characters to reveal based on word length
+  const revealCount = hintLength > 10 ? 2 : 1;
+  
+  // Array to hold revealed characters and masked ones as '*'
+  const hintArray = word.split("").map((char, index) => {
+    // Keep spaces and punctuation visible
+    return /[\s,.'!?]/.test(char) ? char : "*";
+  });
 
-  // Update the hint display element
+  // Randomly reveal characters up to the reveal count
+  let revealed = 0;
+  while (revealed < revealCount) {
+    const randomIndex = Math.floor(Math.random() * hintLength);
+
+    // Only reveal if it's currently masked
+    if (hintArray[randomIndex] === "*") {
+      hintArray[randomIndex] = word[randomIndex];
+      revealed++;
+    }
+  }
+
+  // Convert hint array back to string and display
+  const hint = hintArray.join("");
   hintDisplay.innerHTML = `Hint: ${hint} (* represents hidden characters)`;
 }
-
 
 // Update checkAnswer to handle null cases
 function checkAnswer() {
   if (!currentWordPair) return; // Ensure currentWordPair is valid
 
   const userAnswer = inputField.value.trim().toLowerCase();
+  const correctAnswer = currentWordPair.english.toLowerCase();
 
-  if (userAnswer === currentWordPair.english.toLowerCase()) {
+  // Remove spaces and specified punctuation from userAnswer and correctAnswer
+  const sanitizedUserAnswer = userAnswer.replace(/[\s,.'!?]/g, "");
+  const sanitizedCorrectAnswer = correctAnswer.replace(/[\s,.'!?]/g, "");
+
+  if (sanitizedUserAnswer === sanitizedCorrectAnswer) {
     // Correct answer: add bonus score, hide word display, reset input, and resume game
     score += scoreBonus;
     document.querySelector(".score span").textContent = score;
@@ -396,5 +460,6 @@ function checkAnswer() {
     alert("Incorrect! Try again.");
   }
 }
+
 
 frameRun();
