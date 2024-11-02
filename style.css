@@ -1,25 +1,26 @@
-@font-face {
-  font-family: "netmarbleB";
-  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_four@1.1/netmarbleB.woff") format("woff");
-  font-weight: normal;
-  font-style: normal;
+/* Positioning for Game Elements */
+.score {
+  display: flex;
+  gap: 6px;
+  position: absolute;
+  top: 8px;
+  left: 10px; /* Adjusted spacing from the left */
+  font-size: 14px;
+  z-index: 2;
 }
 
-html, button {
-  font-family: netmarbleB;
+#speedSelector {
+  position: absolute;
+  top: 8px;
+  right: 10px; /* Adjusted spacing from the right */
+  font-size: 14px;
+  padding: 4px 8px;
+  z-index: 2;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
-h2, p {
-  margin: 0;
-}
-
-.game-wrap {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  background-color: #fff;
-}
-
+/* Background */
 .sun {
   position: absolute;
   top: 10px;
@@ -29,12 +30,6 @@ h2, p {
   background-image: url(./image/sun.svg);
   background-size: cover;
   animation: rotate 5s linear infinite;
-}
-
-@keyframes rotate {
-  to {
-    rotate: 1turn;
-  }
 }
 
 .ground {
@@ -47,15 +42,13 @@ h2, p {
   z-index: 0;
 }
 
-.score {
-  display: flex;
-  gap: 6px;
-  position: absolute;
-  top: 8px;
-  left: 0;
-  font-size: 14px;
+/* Game Canvas */
+#canvas {
+  position: relative;
+  z-index: 1;
 }
 
+/* Other Styles */
 .info {
   width: fit-content;
   margin: 0 auto;
@@ -64,11 +57,6 @@ h2, p {
   border-radius: 8px;
   text-align: center;
   cursor: default;
-}
-
-#canvas {
-  position: relative;
-  z-index: 1;
 }
 
 .game-over {
@@ -82,6 +70,7 @@ h2, p {
   z-index: 10;
 }
 
+/* Game Over Popup Styling */
 .game-over .pop-up {
   display: flex;
   flex-direction: column;
@@ -99,6 +88,7 @@ h2, p {
   background-color: #fff;
 }
 
+/* Replay Button */
 .game-over .pop-up .replay {
   padding: 4px 8px;
   margin-top: 8px;
@@ -110,6 +100,7 @@ h2, p {
   cursor: pointer;
 }
 
+/* Word Display for Learning Mode */
 .word-display {
   display: flex;
   flex-direction: column;
@@ -137,8 +128,8 @@ h2, p {
 /* CSS for Mobile SPACE Button */
 .mobile-space-bar {
   display: none; /* Hidden by default on larger screens */
-  position: fixed;
-  bottom: 20px;
+  position: relative; /* Relative positioning to appear below the submit button */
+  margin-top: 20px; /* Space between the submit button and this button */
   left: 50%;
   transform: translateX(-50%);
   padding: 15px 30px;
@@ -151,9 +142,6 @@ h2, p {
 
 /* Show the button on mobile screens */
 @media (max-width: 420px) {
-  .game-over .pop-up {
-    max-width: 300px;
-  }
   .mobile-space-bar {
     display: block;
   }
