@@ -462,24 +462,22 @@ function checkAnswer() {
     // Increment attempt counter and display hint if answer is incorrect
     attempts++;
     if (attempts >= maxAttempts) {
-      // Show the game-over screen with the correct answer
+      // Display the correct answer message and game-over popup
       const totalScore = document.querySelector(".total-score");
       totalScore.textContent = `${score}`;
 
-      const sun = document.querySelector(".sun");
       const gameOver = document.querySelector(".game-over");
+      const popUp = gameOver.querySelector(".pop-up");
 
-      // Update the game-over message with the correct answer and add replay button
-      gameOver.innerHTML = `
-        <div>Game Over!</div>
-        <div>The correct answer was "${currentWordPair.english}" (${currentWordPair.korean}).</div>
-        <div>Your Score: ${score}</div>
-        <button class="replay-button" onclick="resetGame()">Replay</button>
-      `;
+      // Create and insert the correct answer message
+      const correctAnswerMessage = document.createElement("div");
+      correctAnswerMessage.innerHTML = `The correct answer was "${currentWordPair.english}" (${currentWordPair.korean}).`;
+      popUp.insertBefore(correctAnswerMessage, popUp.querySelector("button"));
 
-      // Display and pause game elements
-      sun.style.animationPlayState = "paused";
+      // Display the game-over screen and pause game elements
       gameOver.style.display = "block";
+      const sun = document.querySelector(".sun");
+      sun.style.animationPlayState = "paused";
 
       // Stop the game loop and clear intervals
       cancelAnimationFrame(animation);
