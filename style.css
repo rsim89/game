@@ -1,4 +1,4 @@
-/* Consistent Font Style */
+/* Original Font Styles */
 @font-face {
   font-family: "netmarbleB";
   src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_four@1.1/netmarbleB.woff") format("woff");
@@ -6,66 +6,88 @@
   font-style: normal;
 }
 
-html, body, button, select, span, p {
+html, button {
   font-family: netmarbleB;
-  font-size: 14px; /* Slightly larger for a cuter feel */
+}
+
+h2, p {
   margin: 0;
-  padding: 0;
 }
 
-/* Cute Score and Speed Selector */
-.score {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  position: absolute;
-  top: 15px;
-  left: 15px;
-  padding: 6px 12px;
-  background-color: #ffe4e1; /* Light pink background */
-  color: #ff69b4; /* Bright pink text */
-  border-radius: 12px; /* Rounder corners */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow */
-  font-size: 14px;
-  z-index: 2;
+/* Game Wrap and Background Elements */
+.game-wrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
 }
 
-#speedSelector {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  font-size: 14px;
-  padding: 6px 12px;
-  background-color: #fff0f5; /* Light lavender background */
-  color: #ff69b4;
-  border: 1px solid #ffc0cb; /* Pink border */
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  z-index: 2;
-}
-
-/* Sun Animation - Cute Touch */
 .sun {
   position: absolute;
-  top: 15px;
-  right: 60px;
+  top: 10px;
+  right: 20px;
   width: 40px;
   height: 40px;
   background-image: url(./image/sun.svg);
   background-size: cover;
   animation: rotate 5s linear infinite;
-  filter: drop-shadow(0 2px 4px rgba(255, 182, 193, 0.6)); /* Pink shadow */
 }
 
-/* Ground */
+@keyframes rotate {
+  to {
+    rotate: 1turn;
+  }
+}
+
 .ground {
   position: absolute;
   bottom: 29px;
   left: 0;
   width: 100%;
   height: 2px;
-  background: #ff69b4; /* Bright pink ground */
+  background: #191919;
   z-index: 0;
+}
+
+/* Score Styling */
+.score {
+  display: flex;
+  gap: 6px;
+  position: absolute;
+  top: 48px; /* Adjusted to make space for selector above */
+  left: 10px;
+  font-size: 14px;
+  background: #ffe4e1;
+  padding: 4px 8px;
+  border-radius: 10px;
+  color: #ff69b4;
+  z-index: 2;
+}
+
+/* Speed Selector Styling */
+#speedSelector {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-size: 12px;
+  padding: 4px 8px;
+  background: #fff0f5;
+  border: 1px solid #ffc0cb;
+  border-radius: 10px;
+  color: #ff69b4;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 3; /* Ensures it's above other elements */
+}
+
+/* Info Styling */
+.info {
+  width: fit-content;
+  margin: 0 auto;
+  padding: 10px;
+  border: 4px solid;
+  border-radius: 8px;
+  text-align: center;
+  cursor: default;
 }
 
 /* Canvas Styling */
@@ -74,28 +96,92 @@ html, body, button, select, span, p {
   z-index: 1;
 }
 
-/* Mobile SPACE Button */
-.mobile-space-bar {
+/* Game Over Popup Styling */
+.game-over {
   display: none;
-  position: relative;
-  margin-top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 12px 24px;
-  font-size: 16px;
-  background-color: #ffcc00; /* Soft yellow background */
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 10;
 }
 
+.game-over .pop-up {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  align-items: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 400px;
+  width: 100%;
+  height: fit-content;
+  padding: 40px 0 32px;
+  background-color: #fff;
+}
+
+.game-over .pop-up .replay {
+  padding: 4px 8px;
+  margin-top: 8px;
+  border: 3px solid #191919;
+  border-radius: 4px;
+  background-color: #fff;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Word Display for Learning Mode */
+.word-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.korean-word-display {
+  font-size: 24px;
+  margin-bottom: 10px; /* Space below the Korean word */
+}
+
+.input-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 10px; /* Space above the input field and button */
+}
+
+.word-input {
+  font-size: 16px; /* Prevents zooming on mobile */
+  margin-bottom: 10px; /* Space below the input field */
+}
+
+/* CSS for Mobile SPACE Button */
+.mobile-space-bar {
+  display: none; /* Hidden by default on larger screens */
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 15px 30px;
+  font-size: 18px;
+  background-color: #ffcc00;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+/* Show the button on mobile screens */
 @media (max-width: 420px) {
-  .mobile-space-bar {
-    display: block;
-  }
   .game-over .pop-up {
     max-width: 300px;
+  }
+  .mobile-space-bar {
+    display: block;
   }
 }
