@@ -203,10 +203,15 @@ document.addEventListener("keydown", function (e) {
 });
 
 function resetGame() {  
-  cancelAnimationFrame(animation);
-  clearInterval(scoreInterval);
+  const correctAnswerMessage = document.querySelector(".game-over .pop-up div");
+  if (correctAnswerMessage) {
+  correctAnswerMessage.innerHTML = ""; // Clear the content
+  correctAnswerMessage.style.display = "none"; // Hide the element
+  }  
   koreanWordDisplay.innerHTML = "";
   hintDisplay.innerHTML = "";
+  cancelAnimationFrame(animation);
+  clearInterval(scoreInterval);
   score = 0;
   document.querySelector(".score span").textContent = score;
   manyBoxes = [];
@@ -392,7 +397,7 @@ function checkAnswer() {
       popUp.insertBefore(correctAnswerMessage, replayBtn);
 
       // Add event listener to replay button for restarting the game
-      replayBtn.addEventListener("click", resetGame);
+      replayBtn.addEventListener("click", resetGame());
 
     } else {
       // Provide hint and prompt user to try again
