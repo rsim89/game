@@ -376,11 +376,13 @@ function checkAnswer() {
   } else {
     // Incorrect answer handling
     attempts++;
-    
+    alert(`Incorrect! Attempt ${attempts} of ${maxAttempts}. Try again.`); // Show attempt count
+
     if (attempts >= maxAttempts) {
       // Maximum attempts reached, show correct answer and game-over screen
       const correctAnswerMessage = document.createElement("div");
       correctAnswerMessage.innerHTML = `The correct answer was "${currentWordPair.english}" (${currentWordPair.korean}).`;
+      correctAnswerMessage.classList.add("correct-answer-message");
 
       // Stop game animations and scoring
       cancelAnimationFrame(animation);
@@ -388,21 +390,24 @@ function checkAnswer() {
 
       // Display game-over screen with correct answer message
       const gameOver = document.querySelector(".game-over");
-      const popUp = gameOver.querySelector(".pop-up"); // Select the .pop-up element
-      const replayBtn = popUp.querySelector(".replay"); // Select the replay button within .pop-up
+      const popUp = gameOver.querySelector(".pop-up");
+      const replayBtn = popUp.querySelector(".replay");
       gameOver.style.display = "block";
       document.querySelector(".sun").style.animationPlayState = "paused";
 
       // Insert the correct answer message before the replay button
       popUp.insertBefore(correctAnswerMessage, replayBtn);
 
-      // Add event listener to replay button for restarting the game
-      replayBtn.addEventListener("click", resetGame());
+      // Add event listener to replay button for restarting the game and cleaning up
+      replayBtn.addEventListener("click", () => {
+        // Clear and hide the correct answer message
+        correctAnswerMessage.innerHTML = ""; // Clear the content
+        correctAnswerMessage.style.display = "none"; // Hide the element        
+      });
 
     } else {
-      // Provide hint and prompt user to try again
+      // Provide hint for the next attempt
       displayHint();
-      alert("Incorrect! Try again.");
     }
   }
 }
