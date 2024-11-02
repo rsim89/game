@@ -86,26 +86,34 @@ class Box {
 // score
 let score = 0;
 let scoreInterval;
+let nextLearningModeScore = getRandomLearningScore();
 
 const scoreBonus = 15; // Bonus points for correct answer
+
+function getRandomLearningScore() {
+  // Generates a random score between 30 and 80 for the next learning mode trigger
+  return Math.floor(Math.random() * (80 - 30 + 1)) + 30;
+}
 
 // Integrate learning mode in the score update function
 function updateScore() {
   score += 1;
   document.querySelector(".score span").textContent = score;
 
-  // Trigger learning mode every 30 points
-  if (score % 30 === 0 && !learningMode) {
+  // Trigger learning mode at the next target score
+  if (score >= nextLearningModeScore && !learningMode) {
     learningMode = true;
     learningKoreanWord();
+    nextLearningModeScore = score + getRandomLearningScore(); // Set the next random target score
   }
 }
+
 
 let timer = 0;
 let jumpTimer = 0;
 let manyBoxes = [];
 let animation;
-const obstacleSpeed = 4; // Adjust this value to make the boxes move faster (try values like 4, 5, or more)
+const obstacleSpeed = 6; // Adjust this value to make the boxes move faster (try values like 4, 5, or more)
 
 // In frameRun function, update the obstacle movement
 
@@ -207,8 +215,7 @@ function spaceBarAction() {
   console.log("Space bar pressed or button clicked!");
   // Example: Trigger jump or any other game action
   }
-};
-  
+};  
 
 document.addEventListener("keydown", function (e) {
   if (e.code === "Space") {
