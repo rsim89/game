@@ -1,24 +1,25 @@
 @font-face {
   font-family: "netmarbleB";
-  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_four@1.1/netmarbleB.woff")
-    format("woff");
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_four@1.1/netmarbleB.woff") format("woff");
   font-weight: normal;
   font-style: normal;
 }
-html,
-button {
+
+html, button {
   font-family: netmarbleB;
 }
-h2,
-p {
+
+h2, p {
   margin: 0;
 }
+
 .game-wrap {
   position: relative;
   width: 100%;
   height: 100%;
   background-color: #fff;
 }
+
 .sun {
   position: absolute;
   top: 10px;
@@ -29,11 +30,13 @@ p {
   background-size: cover;
   animation: rotate 5s linear infinite;
 }
+
 @keyframes rotate {
   to {
     rotate: 1turn;
   }
 }
+
 .ground {
   position: absolute;
   bottom: 29px;
@@ -43,6 +46,7 @@ p {
   background: #191919;
   z-index: 0;
 }
+
 .score {
   display: flex;
   gap: 6px;
@@ -51,6 +55,7 @@ p {
   left: 0;
   font-size: 14px;
 }
+
 .info {
   width: fit-content;
   margin: 0 auto;
@@ -60,10 +65,12 @@ p {
   text-align: center;
   cursor: default;
 }
+
 #canvas {
   position: relative;
   z-index: 1;
 }
+
 .game-over {
   display: none;
   position: fixed;
@@ -74,6 +81,7 @@ p {
   background: rgba(0, 0, 0, 0.4);
   z-index: 10;
 }
+
 .game-over .pop-up {
   display: flex;
   flex-direction: column;
@@ -122,6 +130,7 @@ p {
 }
 
 .word-input {
+  font-size: 16px; /* Prevents zooming on mobile */
   margin-bottom: 10px; /* Space below the input field */
 }
 
@@ -141,7 +150,6 @@ p {
 }
 
 /* Show the button on mobile screens */
-
 @media (max-width: 420px) {
   .game-over .pop-up {
     max-width: 300px;
