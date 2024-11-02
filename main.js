@@ -244,7 +244,7 @@ function resetGame() {
   frameRun();
 
   const sun = document.querySelector(".sun");
-  const  = document.querySelector(".game-over");
+  const gameOver = document.querySelector(".game-over");
   sun.style.animationPlayState = "running";
   gameOver.style.display = "none";
 
@@ -403,7 +403,7 @@ function displayHint() {
   // Determine the number of characters to reveal based on word length
   const revealCount = hintLength > 10 ? 2 : 1;
 
-  // Initialize or update the hintArray to progressively reveal characters
+  // Initialize the hint array if it doesn't exist, marking all characters as hidden except punctuation
   if (!hintArray) {
     hintArray = word.split("").map((char) => {
       // Keep spaces and punctuation visible initially
@@ -411,21 +411,23 @@ function displayHint() {
     });
   }
 
-  // Reveal incrementally by updating the hint array at each hint stage
+  // Reveal characters incrementally, selecting random positions each time but keeping previous reveals
   let revealed = 0;
-  while (revealed < revealCount && hintCounter < hintLength) {
-    const charIndex = hintCounter;
-    if (hintArray[charIndex] === "*") {
-      hintArray[charIndex] = word[charIndex];
+  while (revealed < revealCount) {
+    const randomIndex = Math.floor(Math.random() * hintLength);
+
+    // Only reveal the character if it’s currently hidden
+    if (hintArray[randomIndex] === "*") {
+      hintArray[randomIndex] = word[randomIndex];
       revealed++;
     }
-    hintCounter++;
   }
 
   // Convert hint array back to string and display
   const hint = hintArray.join("");
   hintDisplay.innerHTML = `Hint: ${hint} (* represents hidden characters)`;
 }
+
 
 function checkAnswer() {
   if (!currentWordPair) return; // Ensure currentWordPair is valid
