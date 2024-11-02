@@ -35,6 +35,7 @@ const catSvg2 = `<svg width="145" height="169" viewBox="0 0 145 169" fill="none"
 <path d="M42.5954 112.429C38.9287 116.429 32.6954 125.729 37.0954 130.929C41.3261 135.929 39.116 138.248 37.3099 138.864C37.1697 138.911 37.0404 138.977 36.9282 139.073C30.3125 144.766 18.9812 155.829 22.2935 158.108C22.7027 158.389 23.0531 158.805 23.1701 159.287C23.7509 161.683 27.6264 164.348 40.0954 160.429C53.912 156.087 61.0731 144.57 63.0206 139.142C63.072 138.999 63.15 138.873 63.2617 138.77C65.2264 136.954 70.2678 134.656 76.0954 138.929C77.9328 140.014 81.8803 144.585 84.0608 147.266C84.3712 147.648 84.9408 147.733 85.3701 147.493C102.453 137.932 80.6963 155.052 87.5954 163.429C93.1954 170.229 102.929 160.596 107.095 154.929C112.262 148.429 121.395 132.929 116.595 122.929C111.795 112.929 98.9287 124.096 93.0954 130.929" stroke="#191919" stroke-width="5" stroke-linecap="round"/>
 </svg>
 `;
+
 // catSvg1과 catSvg2를 이미지 객체로 변환
 const catImages = [new Image(), new Image()];
 catImages[0].src = "data:image/svg+xml," + encodeURIComponent(catSvg1);
@@ -48,27 +49,17 @@ let muscleCat = {
   width: 50,
   height: 60,
   draw() {
-    ctx.drawImage(
-      catImages[currentCat],
-      this.x,
-      this.y,
-      this.width,
-      this.height
-    );
+    ctx.drawImage(catImages[currentCat], this.x, this.y, this.width, this.height);
   },
   jump() {
-    if (this.y > 40) {
-      this.y -= 10;
-    }
+    if (this.y > 40) this.y -= 10;
   },
   fall() {
-    if (this.y < 120) {
-      this.y += 10;
-    }
+    if (this.y < 120) this.y += 10;
   },
 };
 
-// 장애물
+// Obstacles
 let boxImage = new Image();
 boxImage.src = "./image/box.svg";
 class Box {
@@ -83,188 +74,11 @@ class Box {
   }
 }
 
-// score
+// Score & Learning Mode
 let score = 0;
 let scoreInterval;
 let nextLearningModeScore = getRandomLearningScore();
-
-const scoreBonus = 15; // Bonus points for correct answer
-
-function getRandomLearningScore() {
-  // Generates a random score between 30 and 80 for the next learning mode trigger
-  return Math.floor(Math.random() * (80 - 30 + 1)) + 30;
-}
-
-function getScoreIntervalFromSpeed(obstacleSpeed) {
-    return Math.max(500, 3000 - obstacleSpeed * 300); // Minimum interval of 500ms, adjustable by speed
-}
-
-// Integrate learning mode in the score update function
-function updateScore() {
-  score += 1;
-  document.querySelector(".score span").textContent = score;
-
-  // Trigger learning mode at the next target score
-  if (score >= nextLearningModeScore && !learningMode) {
-    learningMode = true;
-    learningKoreanWord();
-    nextLearningModeScore = score + getRandomLearningScore(); // Set the next random target score
-  }
-}
-
-function setScoreInterval() {
-    if (scoreInterval) clearInterval(scoreInterval);
-    const interval = getScoreIntervalFromSpeed(obstacleSpeed);
-    scoreInterval = setInterval(updateScore, interval);
-}
-
-
-// Listen for changes on the speed selector
-document.getElementById("speedSelector").addEventListener("change", (event) => {
-    obstacleSpeed = parseInt(event.target.value);
-    setScoreInterval(); // Reset score interval with the new speed
-});
-
-
-let timer = 0;
-let jumpTimer = 0;
-let manyBoxes = [];
-let animation;
-let obstacleSpeed = 6; // Default speed // Adjust this value to make the boxes move faster (try values like 4, 5, or more)
-
-// In frameRun function, update the obstacle movement
-
-
-// 프레임마다 실행하기
-function frameRun() {
-  animation = requestAnimationFrame(frameRun);
-  timer++;
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  // 이미지 교체 & score 처리
-  if (timer % 10 === 0) {
-    currentCat = (currentCat + 1) % 2;
-    updateScore();
-  }
-
-  // Update obstacles with dynamic speed
-  manyBoxes.forEach((a, i, o) => {
-    if (a.x < 0) {
-      o.splice(i, 1); // Remove box when it goes off-screen
-    }
-    a.x -= obstacleSpeed; // Use dynamic speed here
-    crash(muscleCat, a);
-    a.draw();
-  });
-
-  // 무작위로 장애물 소환
-  if (Math.random() < 0.05) {
-    let box = new Box();
-    manyBoxes.push(box);
-  }
-
-  // 점프!
-  if (jumpSwitch == true) {
-    muscleCat.jump();
-    jumpTimer++;
-  }
-  if (jumpSwitch == false) {
-    if (muscleCat.y < 120) {
-      muscleCat.y++;
-    }
-  }
-  if (jumpTimer > 10) {
-    jumpSwitch = false;
-    jumpTimer = 0;
-  }
-  muscleCat.draw();
-}
-
-// 충돌확인
-function crash(muscleCat, box) {
-  let xCalculate = box.x - (muscleCat.x + muscleCat.width);
-  let yCalculate = box.y - (muscleCat.y + muscleCat.height);
-  if (xCalculate < 0 && yCalculate < 0) {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    cancelAnimationFrame(animation);
-    clearInterval(scoreInterval);
-    const totalScore = document.querySelector(".total-score");
-    totalScore.textContent = `${score}`;
-    const sun = document.querySelector(".sun");
-    const gameOver = document.querySelector(".game-over");
-    sun.style.animationPlayState = "paused";
-    gameOver.style.display = "block";
-  }
-}
-
-// score 업데이트
-scoreInterval = setInterval(updateScore, 2000);
-
-// 리셋 버튼
-const replayBtn = document.querySelector(".replay");
-
-replayBtn.addEventListener("click", () => {
-  resetGame();
-});
-
-// 헬스냥 spaceBar
-var jumpSwitch = false;
-let lastSpacePressTime = 0;
-
-// JavaScript for handling space bar action
-function spaceBarAction() {
-  const currentTime = Date.now();
-  const timeSinceLastPress = currentTime - lastSpacePressTime;
-  
-    if (timeSinceLastPress > 500) {
-      jumpSwitch = true;
-      lastSpacePressTime = currentTime;
-  console.log("Space bar pressed or button clicked!");
-  // Example: Trigger jump or any other game action
-  }
-};  
-
-document.addEventListener("keydown", function (e) {
-  if (e.code === "Space") {
-    spaceBarAction();
-  }
-});
-
-
-// 게임리셋
-function resetGame() {
-  cancelAnimationFrame(animation);
-  clearInterval(scoreInterval);
-  score = 0;
-  document.querySelector(".score span").textContent = score;
-  koreanWordDisplay.innerHTML = ""; // Clear Korean word display
-  manyBoxes = [];
-  currentCat = 0;
-  jumpSwitch = false;
-  lastSpacePressTime = 0;
-
-  frameRun();
-
-  const sun = document.querySelector(".sun");
-  const gameOver = document.querySelector(".game-over");
-  sun.style.animationPlayState = "running";
-  gameOver.style.display = "none";
-
-  // 스코어 인터벌 제거
-  if (scoreInterval) {
-    clearInterval(scoreInterval);
-  }
-  // 스코어 인터벌 다시시작
-  scoreInterval = setInterval(updateScore, 2000);
-}
-
-
-
-
-// Retrieve the stored file path
-const filePath = localStorage.getItem("filePath");
-
-// Default word pairs if filePath is undefined
+const scoreBonus = 15;
 const defaultWordPairs = [
     { korean: "안녕하세요", english: "hello" },
     { korean: "사랑", english: "love" },
@@ -298,195 +112,210 @@ const defaultWordPairs = [
     { korean: "선생님", english: "teacher" },
     { korean: "컴퓨터", english: "computer" }
 ];
-
-// Function to load word pairs from the specified file
-async function loadWordPairs(filePath) {
-    try {
-        const response = await fetch(filePath);
-        const data = await response.arrayBuffer();
-        const workbook = XLSX.read(data, { type: "array" });
-        const sheet = workbook.Sheets[workbook.SheetNames[0]];
-        const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-
-        const wordPairs = rows.slice(1).map(row => ({
-            korean: row[0],
-            english: row[1]
-        }));
-
-        return wordPairs;
-    } catch (error) {
-        console.error("Error loading word pairs:", error);
-        return [];
-    }
-}
-
-// Load word pairs using the file path from webpage1
-let wordPairs = [];
-
-if (filePath) {
-    loadWordPairs(filePath).then(data => {
-        wordPairs = data.length > 0 ? data : defaultWordPairs;
-        console.log("Loaded word pairs:", wordPairs);
-    });
-} else {
-    // Use default word pairs if filePath is undefined
-    wordPairs = defaultWordPairs;
-    console.log("Using default word pairs:", wordPairs);
-}
-
 let learningMode = false;
 let currentWordPair = null;
+let attempts = 0;
 let hintCounter = -2;
 
-// Create HTML elements for learning mode
-const wordDisplay = document.createElement("div");
-wordDisplay.className = "word-display";
-document.body.appendChild(wordDisplay);
+// Generates a random score between 30 and 80 for the next learning mode trigger
+function getRandomLearningScore() {
+  return Math.floor(Math.random() * (80 - 30 + 1)) + 30;
+}
 
-// Display the Korean word
-const koreanWordDisplay = document.createElement("div");
-koreanWordDisplay.className = "korean-word-display";
-wordDisplay.appendChild(koreanWordDisplay);
+function getScoreIntervalFromSpeed(obstacleSpeed) {
+  return Math.max(500, 3000 - obstacleSpeed * 300);
+}
 
-// Display the hint
-const hintDisplay = document.createElement("div"); // Corrected: "HintDisplay" to "hintDisplay"
-hintDisplay.className = "hint-display";
-wordDisplay.appendChild(hintDisplay); // Corrected: append to "wordDisplay" instead of itself
+function updateScore() {
+  score += 1;
+  document.querySelector(".score span").textContent = score;
 
-// Container for input field and submit button
-const inputContainer = document.createElement("div");
-inputContainer.className = "input-container";
-wordDisplay.appendChild(inputContainer); // Corrected: append to "wordDisplay" instead of itself
+  if (score >= nextLearningModeScore && !learningMode) {
+    learningMode = true;
+    learningKoreanWord();
+    nextLearningModeScore = score + getRandomLearningScore();
+  }
+}
 
-// Input field
-const inputField = document.createElement("input");
-inputField.type = "text";
-inputField.className = "word-input";
-inputContainer.appendChild(inputField);
+function setScoreInterval() {
+  if (scoreInterval) clearInterval(scoreInterval);
+  scoreInterval = setInterval(updateScore, getScoreIntervalFromSpeed(obstacleSpeed));
+}
 
-// Submit button
-const submitButton = document.createElement("button");
-submitButton.innerText = "Submit";
-submitButton.className = "submit-button";
-inputContainer.appendChild(submitButton);
+document.getElementById("speedSelector").addEventListener("change", (event) => {
+  obstacleSpeed = parseInt(event.target.value);
+  setScoreInterval();
+});
 
-// Update learningKoreanWord to manage event listeners
+let timer = 0;
+let jumpTimer = 0;
+let manyBoxes = [];
+let animation;
+let obstacleSpeed = 6;
+let jumpSwitch = false;
+let lastSpacePressTime = 0;
+
+function frameRun() {
+  animation = requestAnimationFrame(frameRun);
+  timer++;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  if (timer % 10 === 0) {
+    currentCat = (currentCat + 1) % 2;
+    updateScore();
+  }
+
+  manyBoxes.forEach((a, i, o) => {
+    if (a.x < 0) o.splice(i, 1);
+    a.x -= obstacleSpeed;
+    crash(muscleCat, a);
+    a.draw();
+  });
+
+  if (Math.random() < 0.05) manyBoxes.push(new Box());
+
+  if (jumpSwitch) {
+    muscleCat.jump();
+    jumpTimer++;
+  } else if (muscleCat.y < 120) {
+    muscleCat.y++;
+  }
+
+  if (jumpTimer > 10) {
+    jumpSwitch = false;
+    jumpTimer = 0;
+  }
+
+  muscleCat.draw();
+}
+
+function crash(muscleCat, box) {
+  let xCalculate = box.x - (muscleCat.x + muscleCat.width);
+  let yCalculate = box.y - (muscleCat.y + muscleCat.height);
+  if (xCalculate < 0 && yCalculate < 0) {
+    cancelAnimationFrame(animation);
+    clearInterval(scoreInterval);
+    document.querySelector(".total-score").textContent = `${score}`;
+    document.querySelector(".sun").style.animationPlayState = "paused";
+    document.querySelector(".game-over").style.display = "block";
+  }
+}
+
+const replayBtn = document.querySelector(".replay");
+replayBtn.addEventListener("click", resetGame);
+
+function spaceBarAction() {
+  const currentTime = Date.now();
+  if (currentTime - lastSpacePressTime > 500) {
+    jumpSwitch = true;
+    lastSpacePressTime = currentTime;
+  }
+}
+
+document.addEventListener("keydown", (e) => {
+  if (e.code === "Space") spaceBarAction();
+});
+
+function resetGame() {
+  cancelAnimationFrame(animation);
+  clearInterval(scoreInterval);
+  score = 0;
+  document.querySelector(".score span").textContent = score;
+  koreanWordDisplay.innerHTML = "";
+  manyBoxes = [];
+  currentCat = 0;
+  jumpSwitch = false;
+  lastSpacePressTime = 0;
+  frameRun();
+  document.querySelector(".sun").style.animationPlayState = "running";
+  document.querySelector(".game-over").style.display = "none";
+  scoreInterval = setInterval(updateScore, 2000);
+}
+
+const filePath = localStorage.getItem("filePath");
+
+async function loadWordPairs(filePath) {
+  try {
+    const response = await fetch(filePath);
+    const data = await response.arrayBuffer();
+    const workbook = XLSX.read(data, { type: "array" });
+    const rows = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], { header: 1 });
+    return rows.slice(1).map((row) => ({ korean: row[0], english: row[1] }));
+  } catch {
+    return [];
+  }
+}
+
+let wordPairs = [];
+if (filePath) {
+  loadWordPairs(filePath).then((data) => {
+    wordPairs = data.length > 0 ? data : defaultWordPairs;
+  });
+} else {
+  wordPairs = defaultWordPairs;
+}
+
 function learningKoreanWord() {
-  // Choose a random word pair
   currentWordPair = wordPairs[Math.floor(Math.random() * wordPairs.length)];
-
-  // Display Korean word in the center
-  wordDisplay.style.display = "flex"; // Make it visible
+  koreanWordDisplay.innerHTML = `Korean: ${currentWordPair.korean}`;
+  wordDisplay.style.display = "flex";
   wordDisplay.style.position = "absolute";
   wordDisplay.style.top = "50%";
   wordDisplay.style.left = "50%";
   wordDisplay.style.transform = "translate(-50%, -50%)";
-  koreanWordDisplay.innerHTML = `Korean: ${currentWordPair.korean}`;
-
-  // Append hint, input field, and submit button
-  wordDisplay.appendChild(hintDisplay); // Corrected: explicitly append hintDisplay to wordDisplay
-  wordDisplay.appendChild(inputContainer);
-
-  // Pause the game
   cancelAnimationFrame(animation);
   clearInterval(scoreInterval);
-
-  // Remove existing event listener to prevent stacking
   submitButton.removeEventListener("click", checkAnswer);
-  submitButton.addEventListener("click", checkAnswer); // Add fresh event listener
+  submitButton.addEventListener("click", checkAnswer);
 }
-
-let maxAttempts = 5; // Maximum number of attempts allowed
-let attempts = 0; // Counter for user attempts
 
 function displayHint() {
   const word = currentWordPair.english;
-  const hintLength = word.length;
-
-  // Determine the number of characters to reveal based on word length
-  const revealCount = hintLength > 10 ? 2 : 1;
-
-  // Initialize the hint array if it doesn't exist, marking all characters as hidden except punctuation
+  const revealCount = word.length > 10 ? 2 : 1;
   if (!hintArray) {
-    hintArray = word.split("").map((char) => {
-      // Keep spaces and punctuation visible initially
-      return /[\s,.'!?]/.test(char) ? char : "*";
-    });
+    hintArray = word.split("").map((char) => (/[\s,.'!?]/.test(char) ? char : "*"));
   }
-
-  // Reveal characters incrementally, selecting random positions each time but keeping previous reveals
   let revealed = 0;
   while (revealed < revealCount) {
-    const randomIndex = Math.floor(Math.random() * hintLength);
-
-    // Only reveal the character if it’s currently hidden
+    const randomIndex = Math.floor(Math.random() * word.length);
     if (hintArray[randomIndex] === "*") {
       hintArray[randomIndex] = word[randomIndex];
       revealed++;
     }
   }
-
-  // Convert hint array back to string and display
-  const hint = hintArray.join("");
-  hintDisplay.innerHTML = `Hint: ${hint} (* represents hidden characters)`;
+  hintDisplay.innerHTML = `Hint: ${hintArray.join("")} (* represents hidden characters)`;
 }
 
-
 function checkAnswer() {
-  if (!currentWordPair) return; // Ensure currentWordPair is valid
-
-  const userAnswer = inputField.value.trim().toLowerCase();
-  const correctAnswer = currentWordPair.english.toLowerCase();
-
-  // Remove spaces and specified punctuation from userAnswer and correctAnswer
-  const sanitizedUserAnswer = userAnswer.replace(/[\s,.'!?]/g, "");
-  const sanitizedCorrectAnswer = correctAnswer.replace(/[\s,.'!?]/g, "");
-
-  if (sanitizedUserAnswer === sanitizedCorrectAnswer) {
-    // Correct answer: add bonus score, hide word display, reset input, and resume game
+  const userAnswer = inputField.value.trim().toLowerCase().replace(/[\s,.'!?]/g, "");
+  const correctAnswer = currentWordPair.english.toLowerCase().replace(/[\s,.'!?]/g, "");
+  if (userAnswer === correctAnswer) {
     score += scoreBonus;
     document.querySelector(".score span").textContent = score;
-
-    // Clear the Korean word display and hint display
-    koreanWordDisplay.innerHTML = ""; // Clear Korean word display
-    hintDisplay.innerHTML = "";       // Clear hint display
-
+    koreanWordDisplay.innerHTML = "";
+    hintDisplay.innerHTML = "";
     inputField.value = "";
     currentWordPair = null;
-    hintCounter = 0;
-    hintArray = null;
-    attempts = 0;
     learningMode = false;
-
-    // Resume game
     frameRun();
     scoreInterval = setInterval(updateScore, 2000);
   } else {
-    // Increment attempt counter and display hint if answer is incorrect
     attempts++;
     if (attempts >= maxAttempts) {
-      // Create and insert the correct answer message
-      const correctAnswerMessage = document.createElement("div");
-      correctAnswerMessage.innerHTML = `The correct answer was "${currentWordPair.english}" (${currentWordPair.korean}).`;
-      
-      // Stop the game loop and clear intervals
-      cancelAnimationFrame(animation);
-      clearInterval(scoreInterval);
-      
-      // Display the game-over screen and pause game elements
-      const gameOver = document.querySelector(".game-over");
-      gameOver.style.display = "block";
-      const sun = document.querySelector(".sun");
-      sun.style.animationPlayState = "paused";
-      gameOver.insertBefore(correctAnswerMessage, gameOver.querySelector("replayBtn"));
-
-
+      displayGameOver();
     } else {
-      // Provide an incremental hint for the incorrect attempt
       displayHint();
       alert("Incorrect! Try again.");
     }
   }
+}
+
+function displayGameOver() {
+  const correctAnswerMessage = document.createElement("div");
+  correctAnswerMessage.innerHTML = `The correct answer was "${currentWordPair.english}" (${currentWordPair.korean}).`;
+  document.querySelector(".sun").style.animationPlayState = "paused";
+  document.querySelector(".game-over").insertBefore(correctAnswerMessage, replayBtn);
+  document.querySelector(".game-over").style.display = "block";
 }
 
 frameRun();
