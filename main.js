@@ -216,7 +216,8 @@ function resetGame() {
   currentCat = 0;
   jumpSwitch = false;
   lastSpacePressTime = 0;
-  learningMode = true;
+  learningMode = false;
+  scoreInterval = setInterval(updateScore, 2000);
   
  // Set a new random score threshold for the next learning mode trigger
   nextLearningModeScore = getRandomLearningScore();
