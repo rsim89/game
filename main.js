@@ -366,7 +366,7 @@ function displayHint() {
       revealed++;
     }
   }
-  hintDisplay.innerHTML = `Hint: ${hintArray.join("")} (* = hidden characters)`;
+  hintDisplay.innerHTML = `힌트: ${hintArray.join("")} (* = hidden letters)`;
 }
 
 function checkAnswer() {
@@ -395,7 +395,7 @@ function checkAnswer() {
   } else {
     // Incorrect answer handling
     attempts++;
-    alert(`Incorrect! Attempt ${attempts} of ${maxAttempts}. Try again.`); // Show attempt count
+    alert(`틀렸어요! 도전 ${attempts} of ${maxAttempts}. 다시 도전해요.`); // Show attempt count
 
     if (attempts >= maxAttempts) {
       // Maximum attempts reached, show correct answer and game-over screen
