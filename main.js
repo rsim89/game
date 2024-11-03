@@ -204,6 +204,7 @@ document.addEventListener("keydown", function (e) {
 
 function resetGame() {
   wordDisplay.style.display = "none";
+  hintDisplay.innerHTML = "";
   inputContainer.style.display = "none"; // Initially hidden
   koreanWordDisplay.innerHTML = "";
   hintDisplay.innerHTML = "";
@@ -420,8 +421,9 @@ function checkAnswer() {
       replayBtn.addEventListener("click", () => {
         resetGame(); // Call resetGame to restart the game
         // Clear and hide the correct answer message
-        correctAnswerMessage.innerHTML = ""; // Clear the content
-        correctAnswerMessage.style.display = "none"; // Hide the element        
+        correctAnswerMessage.innerHTML = ""; // Clear the content        
+        correctAnswerMessage.style.display = "none"; // Hide the element
+        hintDisplay.innerHTML = "";
       });
 
     } else {
