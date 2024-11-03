@@ -231,7 +231,7 @@ function resetGame() {
   document.querySelector(".game-over").style.display = "none";
 }
 
-const filePath = localStorage.getItem("filePath");
+const filePath = sessionStorage.getItem("filePath");
 const defaultWordPairs = [
   { korean: "안녕하세요", english: "hello" },
   { korean: "사랑", english: "love" },
