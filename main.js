@@ -323,7 +323,10 @@ inputContainer.appendChild(submitButton);
 
 function learningKoreanWord() {
   currentWordPair = wordPairs[Math.floor(Math.random() * wordPairs.length)];
-
+  
+  // Reset hintArray for the new word
+  hintArray = currentWordPair.english.split("").map((char) => /[\s,.'!?]/.test(char) ? char : "*");
+  
   wordDisplay.style.display = "flex";
   wordDisplay.style.position = "absolute";
   wordDisplay.style.top = "50%";
@@ -354,9 +357,7 @@ function displayHint() {
   const word = currentWordPair.english;
   const hintLength = word.length;
   const revealCount = hintLength > 10 ? 2 : 1;
-  if (!hintArray) {
-    hintArray = word.split("").map((char) => /[\s,.'!?]/.test(char) ? char : "*");
-  }
+
   let revealed = 0;
   while (revealed < revealCount) {
     const randomIndex = Math.floor(Math.random() * hintLength);
@@ -423,7 +424,7 @@ function checkAnswer() {
         // Clear and hide the correct answer message
         correctAnswerMessage.innerHTML = ""; // Clear the content        
         correctAnswerMessage.style.display = "none"; // Hide the element
-        hintDisplay.innerHTML = "";
+        hintDisplay.innerHTML = ""; // Clear the hint display
       });
 
     } else {
