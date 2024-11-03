@@ -210,7 +210,7 @@ function resetGame() {
   cancelAnimationFrame(animation);
   clearInterval(scoreInterval);
   score = 0;
-  attempt = 0;
+  attempts = 0;
   document.querySelector(".score span").textContent = score;
   manyBoxes = [];
   currentCat = 0;
