@@ -203,7 +203,7 @@ document.addEventListener("keydown", function (e) {
 });
 
 function resetGame() {
-  const inputContainer = document.createElement("div");
+  wordDisplay.style.display = "none";
   inputContainer.style.display = "none"; // Initially hidden
   koreanWordDisplay.innerHTML = "";
   hintDisplay.innerHTML = "";
